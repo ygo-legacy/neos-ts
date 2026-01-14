@@ -7,27 +7,13 @@
       "port": "7211"
     },
     {
-      "name": "mycard-athletic",
-      "ip": "tiramisu.moecube.com",
-      "port": "8912"
-    },
-    {
       "name": "mycard-custom",
       "ip": "tiramisu.moecube.com",
       "port": "7912"
-    },
-    {
-      "name": "pre-release",
-      "ip": "koishi.momobako.com",
-      "port": "889"
-    },
-    {
-      "name": "408",
-      "ip": "koishi.momobako.com",
-      "port": "1408"
     }
   ],
   "assetsPath": "/neos-assets",
+  "legacyApiUrl": "http://localhost:3000/api",
   "releaseResource": {
     "img": "https://cdn02.moecube.com:444/images/ygopro-images-zh-CN",
     "cdb": "https://cdn02.moecube.com:444/ygopro-database/zh-CN/cards.cdb",
@@ -44,14 +30,9 @@
   },
   "stringsUrl": "https://cdn02.moecube.com:444/ygopro-database/zh-CN/strings.conf",
   "replayUrl": "replay.neos.moe",
-  "loginUrl": "https://accounts.moecube.com/signin",
-  "logoutUrl": "https://accounts.moecube.com/signout",
-  "profileUrl": "https://accounts.moecube.com/profiles",
   "athleticWatchUrl": "wss://tiramisu.moecube.com:8923",
   "entertainWatchUrl": "wss://tiramisu.moecube.com:7923",
   "userApi": "https://sapi.moecube.com:444/accounts/users/{username}.json",
-  "mdproServer": "https://zgai.tech:38443",
-  "agentServer": "https://sapi.moecube.com:444/neos-ai-agent",
   "startDelay": 1000,
   "ui": {
     "hint": {

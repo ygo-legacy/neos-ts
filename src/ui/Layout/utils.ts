@@ -5,7 +5,6 @@ import {
   getCookie,
   initStrings,
   initSuperPrerelease,
-  setCookie,
 } from "@/api";
 import { useConfig } from "@/config";
 import sqliteMiddleWare, { sqliteCmd } from "@/middleware/sqlite";
@@ -65,26 +64,17 @@ export const initSuper = async () => {
   }
 };
 
-/** sso登录跳转回来 */
-export const handleSSOLogin = async (search: string) => {
-  /** 从SSO跳转回的URL之中，解析用户信息 */
-  function getSSOUser(searchParams: URLSearchParams): User {
-    return Object.fromEntries(searchParams) as unknown as User;
-  }
-
-  const sso = new URLSearchParams(search).get("sso");
-  const user = sso ? getSSOUser(new URLSearchParams(atob(sso))) : undefined;
-  if (user) {
-    // Convert userID to [`Number`] here
-    user.id = Number(user.id);
-    accountStore.login(user);
-    setCookie(CookieKeys.USER, JSON.stringify(user));
-    // TODO: toast显示登录成功
-  }
-};
-
-/** 从cookie获取登录态 */
+/** 从cookie获取登录态 - YGO Legacy auth */
 export const getLoginStatus = async () => {
-  const user = getCookie<User>(CookieKeys.USER);
-  if (user) accountStore.login(user);
+  try {
+    const userJson = getCookie<string>(CookieKeys.USER);
+    if (userJson && typeof userJson === "string") {
+      const user = JSON.parse(userJson) as User;
+      if (user && user.id && user.username) {
+        accountStore.login(user);
+      }
+    }
+  } catch {
+    // Invalid cookie data, ignore
+  }
 };

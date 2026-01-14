@@ -5,21 +5,29 @@ import { type NeosStore } from "./shared";
 export interface User {
   id: number;
   username: string;
-  name: string;
   email: string;
   token: string;
-  external_id: number;
-  avatar_url: string;
+  avatar_url?: string;
+  // Compatibility fields for existing Neos code
+  name?: string;
+  external_id?: number;
 }
 
 class AccountStore implements NeosStore {
   user?: User;
+
   login(user: User) {
-    this.user = user;
+    // Ensure name is set for compatibility
+    this.user = {
+      ...user,
+      name: user.name || user.username
+    };
   }
+
   logout() {
     this.user = undefined;
   }
+
   reset(): void {
     this.user = undefined;
   }

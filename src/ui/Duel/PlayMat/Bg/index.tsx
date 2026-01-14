@@ -12,6 +12,7 @@ import {
   placeStore,
 } from "@/stores";
 import { BgChain, ChainProps } from "@/ui/Shared";
+import { shouldShowExtraMonsterZones } from "@/config/legacy";
 
 import styles from "./index.module.scss";
 
@@ -32,17 +33,17 @@ const BgBlock: React.FC<
   chains,
   ...rest
 }) => (
-  <div
-    {...rest}
-    className={classnames(styles.block, className, {
-      [styles.highlight]: highlight,
-      [styles.glowing]: glowing,
-    })}
-  >
-    {<DisabledCross disabled={disabled} />}
-    {<BgChain {...chains} />}
-  </div>
-);
+    <div
+      {...rest}
+      className={classnames(styles.block, className, {
+        [styles.highlight]: highlight,
+        [styles.glowing]: glowing,
+      })}
+    >
+      {<DisabledCross disabled={disabled} />}
+      {<BgChain {...chains} />}
+    </div>
+  );
 
 const BgExtraRow: React.FC<{
   meSnap: Snapshot<BlockState[]>;
@@ -162,14 +163,18 @@ const BgOtherBlocks: React.FC<{ op?: boolean }> = ({ op }) => {
 
 export const Bg: React.FC = () => {
   const snap = useSnapshot(placeStore.inner);
+  const showExtraZones = shouldShowExtraMonsterZones();
+
   return (
     <div className={styles["mat-bg"]}>
       <BgRow snap={snap[SZONE].op} szone opponent />
       <BgRow snap={snap[MZONE].op} opponent />
-      <BgExtraRow
-        meSnap={snap[MZONE].me.slice(5, 7)}
-        opSnap={snap[MZONE].op.slice(5, 7)}
-      />
+      {showExtraZones && (
+        <BgExtraRow
+          meSnap={snap[MZONE].me.slice(5, 7)}
+          opSnap={snap[MZONE].op.slice(5, 7)}
+        />
+      )}
       <BgRow snap={snap[MZONE].me} />
       <BgRow snap={snap[SZONE].me} szone />
       <BgOtherBlocks />

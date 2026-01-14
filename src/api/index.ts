@@ -1,6 +1,7 @@
 export * from "./cards";
 export * from "./cookies";
 export * from "./forbiddens";
+export * from "./legacyAuth";
 export * from "./mdproDeck";
 export * from "./mycard";
 export * from "./ocgcore/idl/ocgcore";

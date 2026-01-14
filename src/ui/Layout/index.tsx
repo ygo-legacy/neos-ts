@@ -4,12 +4,11 @@ import {
   LoginOutlined,
   LogoutOutlined,
   SettingFilled,
-  TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { App, Avatar, Dropdown } from "antd";
 import classNames from "classnames";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   type LoaderFunction,
@@ -19,14 +18,10 @@ import {
 } from "react-router-dom";
 import { useSnapshot } from "valtio";
 
-import {
-  CookieKeys,
-  getSSOSignInUrl,
-  getSSOSignOutUrl,
-  removeCookie,
-} from "@/api";
+import { CookieKeys, removeCookie } from "@/api";
 import { useConfig } from "@/config";
 import { accountStore } from "@/stores";
+import { LoginModal, RegisterModal } from "@/ui/Auth";
 
 import { updateMdproDeck } from "../BuildDeck/DeckDatabase/DeckResults";
 import { setCssProperties } from "../Duel/PlayMat/css";
@@ -34,7 +29,6 @@ import { Setting } from "../Setting";
 import styles from "./index.module.scss";
 import {
   getLoginStatus,
-  handleSSOLogin,
   initDeck,
   initForbidden,
   initI18N,
@@ -76,12 +70,11 @@ const HeaderBtn: React.FC<
 
 export const Component = () => {
   const { t: i18n } = useTranslation("Header");
-
-  // 捕获SSO登录
   const routerLocation = useLocation();
-  useEffect(() => {
-    routerLocation.search && handleSSOLogin(routerLocation.search);
-  }, [routerLocation.search]);
+
+  // Auth modal states
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   // 根据是否登录，显示内容
   const logined = Boolean(useSnapshot(accountStore).user);
@@ -89,30 +82,46 @@ export const Component = () => {
   const { pathname } = routerLocation;
   const pathnamesHideHeader = ["/waitroom", "/duel", "/side"];
   const { modal } = App.useApp();
-  const callbackUrl = `${location.origin}/match/`;
-  const onLogin = () => location.replace(getSSOSignInUrl(callbackUrl));
+
+  const onLogin = () => setShowLogin(true);
   const onLogout = () => {
     removeCookie(CookieKeys.USER);
     accountStore.logout();
-    // 跳转SSO登出
-    location.replace(getSSOSignOutUrl(callbackUrl));
+  };
+
+  const switchToRegister = () => {
+    setShowLogin(false);
+    setShowRegister(true);
+  };
+
+  const switchToLogin = () => {
+    setShowRegister(false);
+    setShowLogin(true);
   };
 
   return (
     <>
+      {/* Auth Modals */}
+      <LoginModal
+        open={showLogin}
+        onClose={() => setShowLogin(false)}
+        onSwitchToRegister={switchToRegister}
+      />
+      <RegisterModal
+        open={showRegister}
+        onClose={() => setShowRegister(false)}
+        onSwitchToLogin={switchToLogin}
+      />
+
       {!pathnamesHideHeader.includes(pathname) && (
         <nav className={styles.navbar}>
-          <a
-            href="https://github.com/DarkNeos/neos-ts"
-            title="repo"
-            className={styles["logo-container"]}
-          >
+          <div className={styles["logo-container"]}>
             <img
               className={styles.logo}
               src={`${NeosConfig.assetsPath}/neos-logo.svg`}
-              alt="NEOS"
+              alt="YGO Legacy"
             />
-          </a>
+          </div>
 
           <HeaderBtn to="/">{i18n("HomePage")}</HeaderBtn>
           <HeaderBtn to="/match" disabled={!logined}>
@@ -127,39 +136,19 @@ export const Component = () => {
               arrow
               menu={{
                 items: [
-                  {
-                    label: (
-                      <a href={NeosConfig.profileUrl} target="_blank">
-                        <>
-                          <UserOutlined style={{ fontSize: "16px" }} />{" "}
-                          <strong>{i18n("PersonalCenter")}</strong>
-                        </>
-                      </a>
-                    ),
-                  },
-                  {
-                    label: (
-                      <a href="https://ygobbs.com" target="_blank">
-                        <>
-                          <TeamOutlined style={{ fontSize: "16px" }} />{" "}
-                          <strong>{i18n("MyCardCommunity")}</strong>
-                        </>
-                      </a>
-                    ),
-                  },
-                  {
-                    label: (
-                      <a
-                        href="https://mycard.moe/ygopro/arena/#/"
-                        target="_blank"
-                      >
-                        <>
-                          <DatabaseFilled style={{ fontSize: "16px" }} />{" "}
-                          <strong>{i18n("DuelDatabase")}</strong>
-                        </>
-                      </a>
-                    ),
-                  },
+                  ...(logined
+                    ? [
+                      {
+                        label: (
+                          <>
+                            <UserOutlined style={{ fontSize: "16px" }} />{" "}
+                            <strong>{i18n("PersonalCenter")}</strong>
+                          </>
+                        ),
+                        key: "profile",
+                      },
+                    ]
+                    : []),
                   {
                     label: (
                       <>
@@ -167,6 +156,7 @@ export const Component = () => {
                         <strong>{i18n("SystemSettings")}</strong>
                       </>
                     ),
+                    key: "settings",
                     onClick: () => {
                       modal.info({
                         content: (
@@ -190,6 +180,7 @@ export const Component = () => {
                         </strong>
                       </>
                     ),
+                    key: "fullscreen",
                     onClick: () => document.documentElement.requestFullscreen(),
                   },
                   {
@@ -204,10 +195,11 @@ export const Component = () => {
                         <strong>{i18n("Login")}</strong>
                       </>
                     ),
+                    key: "auth",
                     onClick: logined ? onLogout : onLogin,
                     danger: logined ? true : false,
                   },
-                ].map((x, key) => ({ ...x, key })),
+                ],
               }}
             >
               <div>
