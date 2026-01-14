@@ -5,7 +5,7 @@ import MsgSelectBattleCmd = ygopro.StocGameMessage.MsgSelectBattleCmd;
 /*
  * Msg Select Battle Command
  *
- * @param - see: https://code.mycard.moe/mycard/neos-protobuf/-/blob/main/idl/ocgcore.proto
+ * @param - see: https://github.com/ygo-legacy/neos-protobuf/blob/main/idl/ocgcore.proto
  *
  * @usage - 玩家在战斗阶段可选择的操作
  * */

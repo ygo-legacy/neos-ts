@@ -6,7 +6,7 @@ import MsgSelectOption = ygopro.StocGameMessage.MsgSelectOption;
 /*
  * Msg Select Option
  *
- * @param - see: https://code.mycard.moe/mycard/neos-protobuf/-/blob/main/idl/ocgcore.neos-protobuf
+ * @param - see: https://github.com/ygo-legacy/neos-protobuf/blob/main/idl/ocgcore.proto
  * @usage - 玩家选择选项
  *
  * */

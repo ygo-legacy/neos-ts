@@ -5,7 +5,7 @@ import MsgSelectIdleCmd = ygopro.StocGameMessage.MsgSelectIdleCmd;
 /*
  * Msg Select Idle Command
  *
- * @param - see: https://code.mycard.moe/mycard/neos-protobuf/-/blob/main/idl/ocgcore.proto#L258
+ * @param - see: https://github.com/ygo-legacy/neos-protobuf/blob/main/idl/ocgcore.proto#L258
  *
  * @usage - 玩家可选择的操作
  * */

@@ -5,7 +5,7 @@ import MsgSelectEffectYn = ygopro.StocGameMessage.MsgSelectEffectYn;
 /*
  * Msg Select EffectYn
  *
- * @param - see: https://code.mycard.moe/mycard/neos-protobuf/-/blob/main/idl/ocgcore.neos-protobuf
+ * @param - see: https://github.com/ygo-legacy/neos-protobuf/blob/main/idl/ocgcore.proto
  * @usage - 玩家选择是否发动效果
  *
  * */

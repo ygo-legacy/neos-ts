@@ -6,7 +6,7 @@ import MsgSelectPlace = ygopro.StocGameMessage.MsgSelectPlace;
 /*
  * Msg Select Place
  *
- * @param - see: https://code.mycard.moe/mycard/neos-protobuf/-/blob/main/idl/ocgcore.proto
+ * @param - see: https://github.com/ygo-legacy/neos-protobuf/blob/main/idl/ocgcore.proto
  *
  * @usage - 玩家可选择的位置
  * */
