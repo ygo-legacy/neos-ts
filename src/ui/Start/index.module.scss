@@ -15,61 +15,76 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+
   .left {
     height: 100%;
-    width: 40%;
+    width: 50%;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    .neos-logo {
-      width: 9rem;
-      height: 2rem;
+    gap: 0.6rem;
+
+    .legacy-logo {
+      width: 12rem;
+      height: auto;
+      margin-bottom: 1rem;
     }
+
     .title {
       font-size: 2rem;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.86);
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
+
     .keywords {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 500;
-      color: rgba(235, 245, 235, 0.8);
+      color: #fbbf24;
+      letter-spacing: 0.1em;
     }
+
     .details {
-      margin-top: 2rem;
+      margin-top: 1.5rem;
       width: 28rem;
       max-width: 100%;
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 400;
       line-height: 1.75rem;
-      color: rgba(235, 245, 235, 0.5);
+      color: rgba(235, 245, 235, 0.6);
     }
   }
+
   .right {
     height: 100%;
     width: 40%;
-    position: relative;
-    overflow: hidden;
-    border-bottom-right-radius: 11.25rem;
-    border-bottom-left-radius: 11.25rem;
-    .neos-main-bg {
-      position: absolute;
-      bottom: 0;
-      width: fit-content;
-      height: fit-content;
-      border-radius: 50%;
-      filter: brightness(0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .logoContainer {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .neos-main {
-      position: absolute;
-      bottom: 0;
-      width: 80%;
-      border-bottom-right-radius: 50%;
-      transform: scale(1.25);
-      transform-origin: 50% 100%;
-      filter: drop-shadow(0px 8px 8px rgba(255, 255, 255, 0.3))
-        drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.8));
-      transition: 0.2s;
+
+    .hero-logo {
+      width: 18rem;
+      height: auto;
+      filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.4)) drop-shadow(0 0 60px rgba(59, 130, 246, 0.2));
+      animation: float 3s ease-in-out infinite;
     }
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
   }
 }

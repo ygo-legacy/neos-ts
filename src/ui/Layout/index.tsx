@@ -118,7 +118,7 @@ export const Component = () => {
           <div className={styles["logo-container"]}>
             <img
               className={styles.logo}
-              src={`${NeosConfig.assetsPath}/neos-logo.svg`}
+              src={`${NeosConfig.assetsPath}/ygo-legacy-logo.png`}
               alt="YGO Legacy"
             />
           </div>

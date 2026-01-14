@@ -21,6 +21,7 @@ import { useConfig } from "@/config";
 import { AudioActionType, changeScene } from "@/infra/audio";
 import { accountStore, deckStore, resetUniverse, roomStore } from "@/stores";
 import { Background, IconFont, ScrollableArea, Select } from "@/ui/Shared";
+import { setSelectedDeck } from "@/ui/BuildDeck";
 
 import {
   CustomRoomContent,
@@ -248,7 +249,14 @@ export const Component: React.FC = () => {
             <Button
               style={{ width: 150 }}
               icon={<EditOutlined />}
-              onClick={() => navigate("/build")}
+              onClick={() => {
+                // Set the selected deck before navigating to editor
+                const deck = deckStore.get(deckName);
+                if (deck) {
+                  setSelectedDeck(deck);
+                }
+                navigate("/build");
+              }}
               size="large"
             >
               {i18n("DeckEdit")}
