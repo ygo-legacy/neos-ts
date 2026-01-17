@@ -12,7 +12,10 @@ export class WebSocketStream {
     ip: string,
     onWsOpen?: (conn: WebSocketStream, ev: Event) => any,
   ) {
-    this.ws = new WebSocket("wss://" + ip);
+    // Use ws:// for localhost connections, wss:// for external servers
+    const isLocalhost = ip.startsWith("localhost") || ip.startsWith("127.0.0.1");
+    const protocol = isLocalhost ? "ws://" : "wss://";
+    this.ws = new WebSocket(protocol + ip);
     if (onWsOpen) {
       this.ws.onopen = (e) => onWsOpen(this, e);
     }
