@@ -7,7 +7,8 @@
 
 export const LEGACY_CONFIG = {
     // Habilitar modo Legacy (oculta zonas modernas)
-    enabled: true,
+    // NOTA: Deshabilitado temporalmente para verificar que todo funciona
+    enabled: false,
 
     // Ocultar Extra Monster Zones (zonas 5 y 6)
     hideExtraMonsterZones: true,
