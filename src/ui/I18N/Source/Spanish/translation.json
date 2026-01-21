@@ -45,7 +45,13 @@
     "CustomRoomTitle": "Sala personalizada",
     "CustomRoomDesc": "Crea una sala con reglas personalizadas y desafía a tus amigos.",
     "WIPTitle": "En desarrollo...",
-    "WIPDesc": "Espere por otras funciones."
+    "WIPDesc": "Espere por otras funciones.",
+    "AIvsAITitle": "IA vs IA",
+    "AIvsAIDesc": "Observa un duelo entre dos IAs para probar cómo funcionan los mazos.",
+    "SelectBothBots": "Selecciona ambos bots",
+    "StartDuel": "Iniciar Duelo",
+    "LeaveQueueFirst": "Primero sal de la cola de ranked",
+    "InQueueTooltip": "Estás buscando rival en ranked"
   },
   "BuildDeck": {
     "EnterTheDeckName": "Nombre del mazo",

@@ -14,6 +14,7 @@ import {
   type LoaderFunction,
   NavLink,
   Outlet,
+  redirect,
   useLocation,
 } from "react-router-dom";
 import { useSnapshot } from "valtio";
@@ -39,6 +40,14 @@ import {
 const NeosConfig = useConfig();
 
 export const loader: LoaderFunction = async () => {
+  // YGO Legacy: Load authentication from localStorage first
+  const isAuthenticated = await accountStore.loadFromStorage();
+
+  // If not authenticated, redirect to login page
+  if (!isAuthenticated) {
+    return redirect("/login");
+  }
+
   getLoginStatus();
   initDeck();
   initSqlite();

@@ -1,12 +1,18 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 
-import { Component, loader } from "./Layout";
+import { Component as LayoutComponent, loader as layoutLoader } from "./Layout";
 
 const router = createBrowserRouter([
+  // Public route - Login page (outside of Layout)
+  {
+    path: "/login",
+    lazy: () => import("./Login"),
+  },
+  // Protected routes - wrapped in Layout
   {
     path: "/",
-    Component,
-    loader,
+    Component: LayoutComponent,
+    loader: layoutLoader,
     children: [
       {
         path: "/",
@@ -33,6 +39,11 @@ const router = createBrowserRouter([
         lazy: () => import("./Side"),
       },
     ],
+  },
+  // Catch-all redirect to start
+  {
+    path: "*",
+    element: <Navigate to="/" replace />,
   },
 ]);
 

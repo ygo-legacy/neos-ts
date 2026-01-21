@@ -88,6 +88,7 @@ export const Component: React.FC = () => {
             {/* Single Player - Modo contra IA */}
             <IAMode />
 
+
             {/* Replay - Ver repeticiones */}
             <Mode
               title={i18n("ReplayTitle")}

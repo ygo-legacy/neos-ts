@@ -49,6 +49,11 @@ export const loader: LoaderFunction = async () => {
 };
 
 export const Component: React.FC = () => {
+  return <PlayerWaitRoom />;
+};
+
+// Original WaitRoom component
+const PlayerWaitRoom: React.FC = () => {
   const container = getUIContainer();
   const { t: i18n } = useTranslation("WaitRoom");
   const { message } = App.useApp();
@@ -153,7 +158,7 @@ export const Component: React.FC = () => {
                   <MoraAvatar
                     mora={
                       me?.moraResult !== undefined &&
-                      me.moraResult !== HandType.UNKNOWN
+                        me.moraResult !== HandType.UNKNOWN
                         ? Object.values(Mora)[me.moraResult - 1]
                         : undefined
                     }
@@ -174,7 +179,7 @@ export const Component: React.FC = () => {
                       <MoraAvatar
                         mora={
                           op?.moraResult !== undefined &&
-                          op.moraResult !== HandType.UNKNOWN
+                            op.moraResult !== HandType.UNKNOWN
                             ? Object.values(Mora)[op.moraResult - 1]
                             : undefined
                         }
@@ -226,8 +231,8 @@ const PlayerZone: React.FC<{
             avatar && player
               ? avatar
               : player && player.state !== PlayerState.LEAVE
-              ? `${NeosConfig.assetsPath}/default-avatar.png`
-              : ""
+                ? `${NeosConfig.assetsPath}/default-avatar.png`
+                : ""
           }
           size={48}
         />
