@@ -10,7 +10,7 @@ import { isToken } from "@/common";
 import { AudioActionType, changeScene } from "@/infra/audio";
 import { emptySearchConditions, FtsConditions } from "@/middleware/sqlite/fts";
 import { initStore } from "@/stores";
-import { Background, IconFont } from "@/ui/Shared";
+import { Background, IconFont, YgoCard } from "@/ui/Shared";
 
 import { DatabaseCard } from "./DatabaseCard";
 import styles from "./index.module.scss";
@@ -20,16 +20,43 @@ export const loader = () => {
     return null;
 };
 
+// Skeleton Grid Component
+const SkeletonGrid = () => {
+    // Generate 30 placeholders
+    const placeholders = Array.from({ length: 30 }, (_, i) => i);
+    return (
+        <div className={styles.cardContainer}>
+            <div className={styles.grid}>
+                {placeholders.map((i) => (
+                    <div
+                        key={i}
+                        style={{
+                            aspectRatio: "59/86",
+                            position: "relative",
+                            width: "100%",
+                            backgroundColor: "rgba(255, 255, 255, 0.05)",
+                            borderRadius: "4px"
+                        }}
+                    >
+                        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}>
+                            <YgoCard isBack code={0} style={{ width: "100%", height: "100%" }} />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 export const Component: React.FC = () => {
     const { t: i18n } = useTranslation("BuildDeck"); // Reusing i18n for now
     const [searchParams, setSearchParams] = useSearchParams();
     const [searchCardResult, setSearchCardResult] = useState<CardMeta[]>([]);
+    const [loading, setLoading] = useState(true);
 
     // Read initial state from URL
     const initialQuery = searchParams.get("q") || "";
     const [searchWord, setSearchWord] = useState(initialQuery);
-
-    // const ref = useRef<OverlayScrollbarsComponentRef<"div">>(null);
 
     const handleSearch = useCallback((query: string) => {
         // Update URL
@@ -57,7 +84,9 @@ export const Component: React.FC = () => {
                 } else {
                     handleSearch("");
                 }
+                setLoading(false);
             } else {
+                setLoading(true);
                 // Wait for DB
                 const unsub = subscribeKey(initStore.sqlite, "progress", (val) => {
                     if (val === 1) {
@@ -66,6 +95,7 @@ export const Component: React.FC = () => {
                         } else {
                             handleSearch("");
                         }
+                        setLoading(false);
                         unsub();
                     }
                 });
@@ -77,12 +107,22 @@ export const Component: React.FC = () => {
     }, []);
 
     const onSearch = () => {
-        handleSearch(searchWord);
+        // Simple loading toggle for UX effect if desired, even if sync
+        setLoading(true);
+        // Small timeout to allow UI to show loader if search is heavy
+        setTimeout(() => {
+            handleSearch(searchWord);
+            setLoading(false);
+        }, 10);
     };
 
     const onReset = () => {
         setSearchWord("");
-        handleSearch("");
+        setLoading(true);
+        setTimeout(() => {
+            handleSearch("");
+            setLoading(false);
+        }, 10);
     };
 
     return (
@@ -123,7 +163,11 @@ export const Component: React.FC = () => {
                     </span>
                 </div>
 
-                <CardList results={searchCardResult} />
+                {loading ? (
+                    <SkeletonGrid />
+                ) : (
+                    <CardList results={searchCardResult} />
+                )}
             </div>
         </div>
     );

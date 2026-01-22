@@ -16,6 +16,7 @@ import {
   Outlet,
   redirect,
   useLocation,
+  useNavigation,
 } from "react-router-dom";
 import { useSnapshot } from "valtio";
 
@@ -23,6 +24,7 @@ import { CookieKeys, removeCookie } from "@/api";
 import { useConfig } from "@/config";
 import { accountStore } from "@/stores";
 import { LoginModal, RegisterModal } from "@/ui/Auth";
+import { Loading } from "@/ui/Shared";
 
 import { updateMdproDeck } from "../Decks/BuildDeck/DeckDatabase/DeckResults";
 import { setCssProperties } from "../Duel/PlayMat/css";
@@ -126,8 +128,12 @@ export const Component = () => {
     setShowLogin(true);
   };
 
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
   return (
     <>
+      {isLoading && <Loading overlay />}
       {/* Auth Modals */}
       <LoginModal
         open={showLogin}
