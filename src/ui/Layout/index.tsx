@@ -51,9 +51,9 @@ export const loader: LoaderFunction = async () => {
   getLoginStatus();
   initDeck();
   initSqlite();
-  initForbidden();
-  initI18N();
-  initSuper();
+  await initForbidden(); // Critical for limit display
+  await initI18N();
+  await initSuper(); // Critical for getCardImgUrl
   // TODO: should avoid reloading mdpro deck again
   updateMdproDeck();
 
