@@ -6,10 +6,38 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
+
   .text {
     font-size: 14px;
   }
+
   .icon {
     font-size: 20px;
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+  background: #0f131e;
+  // Use existing flex styles
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  .text {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .icon {
+    font-size: 32px;
+    color: #0085da;
   }
 }

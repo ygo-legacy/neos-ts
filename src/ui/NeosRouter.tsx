@@ -80,4 +80,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-export const NeosRouter = () => <RouterProvider router={router} />;
+import { Loading } from "@/ui/Shared";
+
+export const NeosRouter = () => <RouterProvider router={router} fallbackElement={<Loading overlay />} />;
