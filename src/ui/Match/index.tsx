@@ -8,7 +8,7 @@ import { useSnapshot } from "valtio";
 import { AudioActionType, changeScene } from "@/infra/audio";
 import { deckStore, resetUniverse, roomStore } from "@/stores";
 import { Background, Select } from "@/ui/Shared";
-import { setSelectedDeck } from "@/ui/BuildDeck";
+import { setSelectedDeck } from "@/ui/Decks/BuildDeck";
 
 import styles from "./index.module.scss";
 import { ReplayModal, replayOpen } from "./ReplayModal";

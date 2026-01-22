@@ -14,7 +14,7 @@ import YGOProDeck from "ygopro-deck-encode";
 import { uploadDeck } from "@/api";
 import { accountStore, deckStore, IDeck } from "@/stores";
 
-import { Uploader } from "../../Shared";
+import { Uploader } from "@/ui/Shared";
 import { genYdkText } from "../utils";
 import styles from "./index.module.scss";
 
@@ -264,8 +264,8 @@ const DeckUploader: React.FC<{ onLoaded: (deck: IDeck) => void }> = ({
 /** 阻止事件冒泡 */
 const cancelBubble =
   <T,>(fn: (e: React.SyntheticEvent) => T) =>
-  (e: React.SyntheticEvent) => {
-    e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
-    return fn(e);
-  };
+    (e: React.SyntheticEvent) => {
+      e.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+      return fn(e);
+    };

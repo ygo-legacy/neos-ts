@@ -1,11 +1,11 @@
 import { message, Pagination } from "antd";
 import React, { memo, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { CardMeta } from "@/api";
 import { isExtraDeckCard } from "@/common";
 import { DeckCard, DeckCardMouseUpEvent, IconFont } from "@/ui/Shared";
 
-import { selectedCard } from "../..";
 import { editDeckStore } from "../../store";
 import styles from "./index.module.scss";
 
@@ -14,6 +14,7 @@ export const CardResults: React.FC<{
   results: CardMeta[];
   scrollToTop: () => void;
 }> = memo(({ results, scrollToTop }) => {
+  const navigate = useNavigate();
   const itemsPerPage = 196; // 每页显示的数据数量
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -25,9 +26,8 @@ export const CardResults: React.FC<{
   const endIndex = startIndex + itemsPerPage;
   const currentData = results.slice(startIndex, endIndex);
 
-  const showSelectedCard = (card: CardMeta) => {
-    selectedCard.id = card.id;
-    selectedCard.open = true;
+  const showCardDetail = (card: CardMeta) => {
+    navigate(`cards/${card.id}`);
   };
 
   const handleAddCardToMain = (card: CardMeta) => {
@@ -57,7 +57,7 @@ export const CardResults: React.FC<{
     switch (event.button) {
       // 左键
       case 0:
-        showSelectedCard(card);
+        showCardDetail(card);
         break;
       // 中键
       case 1:
@@ -83,7 +83,6 @@ export const CardResults: React.FC<{
                 key={card.id}
                 source="search"
                 onMouseUp={handleMouseUp}
-                onMouseEnter={() => showSelectedCard(card)}
               />
             ))}
           </div>
