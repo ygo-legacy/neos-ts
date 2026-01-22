@@ -16,6 +16,7 @@ export interface FtsConditions {
   attributes: number[]; // 属性
   atk: { min: number | null; max: number | null }; // 攻击力区间
   def: { min: number | null; max: number | null }; // 防御力区间
+  setcode?: number; // 字段/系列
 }
 
 export const emptySearchConditions: FtsConditions = {
@@ -26,6 +27,7 @@ export const emptySearchConditions: FtsConditions = {
   races: [],
   attributes: [],
   types: [],
+  setcode: undefined,
 };
 
 export interface FtsParams {
@@ -60,7 +62,7 @@ export function invokeFts(db: Database, params: FtsParams): CardMeta[] {
 }
 
 function getFtsCondtions(conditions: FtsConditions): string {
-  const { types, levels, lscales, atk, def, races, attributes } = conditions;
+  const { types, levels, lscales, atk, def, races, attributes, setcode } = conditions;
   const assertMonster = `(type & ${TYPE_MONSTER}) > 0`;
 
   const typesCondition = types
@@ -75,21 +77,27 @@ function getFtsCondtions(conditions: FtsConditions): string {
   const atkCondition =
     atk.min !== null || atk.max !== null
       ? `atk BETWEEN ${handleFinite(atk.min, "min")} AND ${handleFinite(
-          atk.max,
-          "max",
-        )} AND ${assertMonster}`
+        atk.max,
+        "max",
+      )} AND ${assertMonster}`
       : undefined;
   const defCondition =
     def.min !== null || def.max !== null
       ? `def BETWEEN ${handleFinite(def.min, "min")} AND ${handleFinite(
-          def.max,
-          "max",
-        )} AND ${assertMonster}`
+        def.max,
+        "max",
+      )} AND ${assertMonster}`
       : undefined;
   const raceCondition = races.map((race) => `race = ${race}`).join(" OR ");
   const attributeCondition = attributes
     .map((attribute) => `attribute = ${attribute}`)
     .join(" OR ");
+
+  // Setcode check: (setcode & 0xfff) = target OR subsets logic if needed. 
+  // For basic support: match the lower 16 bits (standard archetype code).
+  const setcodeCondition = setcode
+    ? `(setcode & 0xffff) = ${setcode & 0xffff}`
+    : undefined;
 
   const merged = [
     typesCondition,
@@ -99,6 +107,7 @@ function getFtsCondtions(conditions: FtsConditions): string {
     defCondition,
     raceCondition,
     attributeCondition,
+    setcodeCondition,
   ]
     .filter((condition) => condition !== undefined && condition !== "")
     .map((condition) => `(${condition})`)

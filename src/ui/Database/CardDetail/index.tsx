@@ -1,14 +1,10 @@
-/**
- * Database Card Detail View
- * Independent component for displaying card details in database section
- */
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, Descriptions, type DescriptionsProps } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { type CardMeta, fetchCard, fetchStrings, Region } from "@/api";
+import { type CardMeta, fetchCard, fetchStrings, Region, searchCards } from "@/api";
 import {
     Attribute2StringCodeMap,
     extraCardTypes,
@@ -18,8 +14,10 @@ import {
     Race2StringCodeMap,
     Type2StringCodeMap,
 } from "@/common";
+import { emptySearchConditions } from "@/middleware/sqlite/fts";
 import { Background, CardEffectText, ScrollableArea, YgoCard } from "@/ui/Shared";
 
+import { DatabaseCard } from "../DatabaseCard";
 import styles from "./index.module.scss";
 
 export const loader = () => null;
@@ -31,12 +29,49 @@ export const Component: React.FC = () => {
 
     const code = parseInt(cardId || "0", 10);
     const [card, setCard] = useState<CardMeta>();
+    const [relatedCards, setRelatedCards] = useState<CardMeta[]>([]);
 
     useEffect(() => {
         if (code) {
-            setCard(fetchCard(code));
+            const fetchedCard = fetchCard(code);
+            setCard(fetchedCard);
+            setRelatedCards([]); // Reset related cards on card change
         }
     }, [code]);
+
+    // Effect to fetch related cards
+    useEffect(() => {
+        if (!card?.data.setcode) return;
+
+        // Arbitrary limit to avoid heavy rendering
+        const setcode = card.data.setcode;
+        // Don't search if setcode is 0
+        if (setcode === 0) return;
+
+        // Run in timeout to not block UI render
+        const timer = setTimeout(() => {
+            try {
+                const results = searchCards({
+                    query: "",
+                    conditions: {
+                        ...emptySearchConditions,
+                        setcode: setcode
+                    }
+                });
+
+                // Filter out current card and limit results
+                const filtered = results
+                    .filter(c => c.id !== card.id)
+                    .slice(0, 12);
+
+                setRelatedCards(filtered);
+            } catch (e) {
+                console.error("Failed to search related cards", e);
+            }
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [card]);
 
     const cardType = useMemo(
         () =>
@@ -171,6 +206,19 @@ export const Component: React.FC = () => {
                         </ScrollableArea>
                     </div>
                 </div>
+
+                {relatedCards.length > 0 && (
+                    <div className={styles.relatedSection}>
+                        <h2 className={styles.sectionTitle}>{i18n("RelatedCards", "Cartas Relacionadas")}</h2>
+                        <div className={styles.relatedGrid}>
+                            {relatedCards.map((c) => (
+                                <Link key={c.id} to={`/database/cards/${c.id}`} className={styles.relatedCardItem}>
+                                    <DatabaseCard value={c} />
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
