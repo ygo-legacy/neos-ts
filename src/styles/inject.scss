@@ -20,6 +20,7 @@
 .ant-app {
   display: flex;
   height: 100%;
+  /* Height is controlled by parent layout class context */
   flex-direction: column;
 }
 
