@@ -13,6 +13,7 @@ html {
     font-size: 14px;
   }
 }
+
 /* Mobile */
 @media screen and (max-width: 1080px) {
   html {
@@ -27,19 +28,42 @@ body {
   display: flex;
   margin: 0;
   min-width: 20rem;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  /* Base styles, no fixed positioning by default */
+  min-height: 100vh;
   font-family: var(--theme-font);
   --theme-font: "Electrolize", sans-serif;
   --nato-serif-font: "Noto Serif SC", serif;
   --header-height: 3.5rem;
+
+  #root {
+    width: 100%;
+    margin: 0 auto;
+    /* Height handled by layout classes */
+  }
+}
+
+/* Layout Utilities controlled by React Layout */
+.layout-fixed {
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
   #root {
     height: 100%;
-    margin: 0 auto;
-    width: 100%;
+  }
+}
+
+.layout-scroll {
+  min-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+
+  #root {
+    min-height: 100vh;
   }
 }
 
