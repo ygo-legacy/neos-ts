@@ -5,6 +5,7 @@
   --side-box-width: 30rem;
   --border-radius: 0.625rem;
   --sider-width: 18.75rem;
+
   .content {
     height: 100%;
     position: relative;
@@ -14,14 +15,20 @@
     align-items: center;
     justify-content: center;
     transition: transform 0.3s;
+    overflow-y: auto;
+
+    /* Enable scroll if needed */
     .wrap {
-      height: 30rem; // TODO: 修正这里的高度，或者说修正全局的高度设置。高度不应该超过100%
+      /* height: 30rem; removed fixed height constraint */
+      min-height: 30rem;
+      padding: 2rem 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
   }
+
   .sider {
     position: relative;
     width: var(--sider-width);
@@ -40,6 +47,7 @@
   gap: 1.8rem;
   align-items: center;
   margin-top: 5rem;
+
   .side-box {
     height: 6.25rem;
     width: var(--side-box-width);
@@ -51,6 +59,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+
     .inner {
       position: absolute;
       left: 0;
@@ -59,24 +68,31 @@
       filter: blur(7.5rem);
       transition: 0.3s;
     }
+
     &.ready .inner {
       width: 15.6rem;
       height: 6.25rem;
       filter: blur(6.25rem) brightness(1.2) saturate(1.2);
     }
+
     &.me {
       box-shadow: -0.3rem 0 1.25rem 0 rgba(0, 115, 255, 0.15);
+
       .inner {
         background: linear-gradient(to right, blue, rgb(0, 149, 255));
       }
+
       z-index: 1;
     }
+
     &.op {
       box-shadow: 0.3rem 0 1.25rem 0 rgba(255, 0, 81, 0.1);
+
       .inner {
         background: linear-gradient(to right, rgb(255, 0, 106), rgb(255, 0, 0));
       }
     }
+
     .name {
       font-size: 1.2rem;
       color: white;
@@ -119,21 +135,25 @@
   flex-direction: column;
   gap: 0.625rem;
   transition: 0.3s;
+
   .btn {
     width: 2rem;
     background: hsla(0, 0%, 100%, 0.1);
     justify-content: start;
     padding: 0 0.5rem;
     overflow: hidden;
+
     .btn-icon {
       display: flex;
       align-items: center;
+
       // gap: 4px;
       .btn-text {
         width: 0;
         line-height: 0;
       }
     }
+
     &:hover {
       width: 6.25rem;
     }
@@ -144,9 +164,11 @@
   .sider {
     transform: translateX(calc(-1 * var(--sider-width)));
   }
+
   .content {
     transform: translateX(calc(-1 * var(--sider-width) / 2));
   }
+
   .btns-side {
     transform: translateX(calc(-1 * var(--sider-width) / 2));
   }
@@ -164,15 +186,19 @@
   cursor: not-allowed;
   transition: 0.2s;
   position: relative;
-  & > * {
+
+  &>* {
     transition: 0.2s;
   }
-  &:hover > * {
+
+  &:hover>* {
     opacity: 0.8;
   }
-  &:active > * {
+
+  &:active>* {
     opacity: 0.6;
   }
+
   overflow: hidden;
 }
 

@@ -89,6 +89,25 @@ export const Component = () => {
   const logined = Boolean(useSnapshot(accountStore).user);
 
   const { pathname } = routerLocation;
+  // Routes that require fixed layout (no global scroll)
+  const fixedRoutes = ["/waitroom", "/duel", "/side"];
+  const isFixedLayout = fixedRoutes.some((route) => pathname.startsWith(route));
+
+  React.useEffect(() => {
+    // Apply layout class to body to control global scroll behavior
+    if (isFixedLayout) {
+      document.body.classList.add("layout-fixed");
+      document.body.classList.remove("layout-scroll");
+    } else {
+      document.body.classList.add("layout-scroll");
+      document.body.classList.remove("layout-fixed");
+    }
+    // Cleanup not strictly necessary as we always set one or other, but good practice
+    return () => {
+      document.body.classList.remove("layout-fixed", "layout-scroll");
+    };
+  }, [isFixedLayout]);
+
   const pathnamesHideHeader = ["/waitroom", "/duel", "/side"];
   const { modal } = App.useApp();
 
@@ -135,6 +154,9 @@ export const Component = () => {
           <HeaderBtn to="/">{i18n("HomePage")}</HeaderBtn>
           <HeaderBtn to="/match" disabled={!logined}>
             {i18n("Match")}
+          </HeaderBtn>
+          <HeaderBtn to="/database" disabled={!logined}>
+            {i18n("Database")}
           </HeaderBtn>
           <HeaderBtn to="/decks" disabled={!logined}>
             {i18n("DeckBuilding")}

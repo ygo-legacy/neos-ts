@@ -22,6 +22,15 @@ const router = createBrowserRouter([
         path: "/match/*",
         lazy: () => import("./Match"),
       },
+      // Database route - independent section
+      {
+        path: "/database",
+        lazy: () => import("./Database"),
+      },
+      {
+        path: "/database/cards/:cardId",
+        lazy: () => import("./Database/CardDetail"),
+      },
       // Deck management routes
       {
         path: "/decks",
