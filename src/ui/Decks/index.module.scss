@@ -1,0 +1,90 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.content {
+    width: 100%;
+    max-width: 1200px;
+    z-index: 1;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.title {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.empty {
+    margin-top: 4rem;
+
+    :global(.ant-empty-description) {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.deckGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.deckCard {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        border-color: rgba(129, 140, 248, 0.3);
+    }
+
+    :global(.ant-card-meta-title) {
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    :global(.ant-card-actions) {
+        background: rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+        >li {
+            border-right-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .anticon {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            transition: color 0.2s;
+
+            &:hover {
+                color: #818cf8;
+            }
+        }
+    }
+}
+
+.deckStats {
+    display: flex;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}

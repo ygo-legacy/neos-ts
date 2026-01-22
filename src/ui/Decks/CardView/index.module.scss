@@ -1,0 +1,103 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.content {
+    width: 100%;
+    max-width: 1000px;
+    z-index: 1;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.backButton {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+
+    &:hover {
+        color: #818cf8;
+    }
+}
+
+.cardLayout {
+    display: flex;
+    gap: 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cardImage {
+    flex-shrink: 0;
+
+    a {
+        display: block;
+    }
+}
+
+.card {
+    width: 280px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.02);
+    }
+}
+
+.cardInfo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardName {
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem 0;
+    background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.scrollArea {
+    flex: 1;
+    max-height: 400px;
+}
+
+.descriptions {
+    :global(.ant-descriptions-item-label) {
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 500;
+    }
+
+    :global(.ant-descriptions-item-content) {
+        color: #fff;
+    }
+}
+
+@media (max-width: 768px) {
+    .cardLayout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 200px;
+    }
+
+    .cardName {
+        text-align: center;
+    }
+}

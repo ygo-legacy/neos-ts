@@ -22,9 +22,33 @@ const router = createBrowserRouter([
         path: "/match/*",
         lazy: () => import("./Match"),
       },
+      // Deck management routes
+      {
+        path: "/decks",
+        lazy: () => import("./Decks"),
+      },
+      // Build new deck (must be before :deckName to avoid conflict)
+      {
+        path: "/decks/build",
+        lazy: () => import("./Decks/Build"),
+      },
+      {
+        path: "/decks/build/cards/:cardId",
+        lazy: () => import("./Decks/CardView"),
+      },
+      // Edit existing deck
+      {
+        path: "/decks/:deckName",
+        lazy: () => import("./Decks/Edit"),
+      },
+      {
+        path: "/decks/:deckName/cards/:cardId",
+        lazy: () => import("./Decks/CardView"),
+      },
+      // Legacy route - keep for testing, remove later
       {
         path: "/build",
-        lazy: () => import("./BuildDeck"),
+        lazy: () => import("./Decks/BuildDeck"),
       },
       {
         path: "/waitroom",
