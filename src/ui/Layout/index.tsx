@@ -85,7 +85,6 @@ export const Component = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
 
-  // 根据是否登录，显示内容
   const logined = Boolean(useSnapshot(accountStore).user);
 
   const { pathname } = routerLocation;
