@@ -91,6 +91,7 @@ const cannotAddTokens = messages[language].cannotAddTokens;
 /* End of definition (I18N) */
 
 export const editDeckStore = proxy({
+  id: "",
   deckName: "",
   main: [] as CardMeta[],
   extra: [] as CardMeta[],
@@ -113,6 +114,7 @@ export const editDeckStore = proxy({
     }
   },
   set(deck: EditingDeck) {
+    editDeckStore.id = deck.id;
     editDeckStore.deckName = deck.deckName;
     editDeckStore.main = deck.main;
     editDeckStore.extra = deck.extra.sort(compareCards);

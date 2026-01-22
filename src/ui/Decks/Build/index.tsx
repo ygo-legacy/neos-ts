@@ -36,7 +36,8 @@ export const loader: LoaderFunction = async () => {
 
     // Set empty deck for new creation
     const newDeckName = `New Deck ${new Date().toLocaleTimeString()}`;
-    setSelectedDeck({ ...emptyDeck, deckName: newDeckName });
+    const id = crypto.randomUUID();
+    setSelectedDeck({ ...emptyDeck, deckName: newDeckName, id });
 
     changeScene(AudioActionType.BGM_DECK);
     return null;
@@ -46,7 +47,8 @@ export const Component: React.FC = () => {
     useEffect(() => {
         // Ensure we start with a fresh empty deck
         const newDeckName = `New Deck ${new Date().toLocaleTimeString()}`;
-        setSelectedDeck({ ...emptyDeck, deckName: newDeckName });
+        const id = crypto.randomUUID();
+        setSelectedDeck({ ...emptyDeck, deckName: newDeckName, id });
     }, []);
 
     return <BuildDeckComponent />;

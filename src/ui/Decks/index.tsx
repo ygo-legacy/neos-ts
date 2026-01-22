@@ -21,8 +21,12 @@ export const Component: React.FC = () => {
     const { message } = App.useApp();
     const { decks } = useSnapshot(deckStore);
 
-    const handleEditDeck = (deckName: string) => {
-        navigate(`/decks/${encodeURIComponent(deckName)}`);
+    const handleEditDeck = (deckId: string) => {
+        navigate(`/decks/edit/${deckId}`);
+    };
+
+    const handleViewDeck = (deckId: string) => {
+        navigate(`/decks/show/${deckId}`);
     };
 
     const handleNewDeck = () => {
@@ -67,16 +71,16 @@ export const Component: React.FC = () => {
                     <div className={styles.deckGrid}>
                         {decks.map((deck) => (
                             <Card
-                                key={deck.deckName}
+                                key={deck.id}
                                 className={styles.deckCard}
                                 hoverable
-                                onClick={() => handleEditDeck(deck.deckName)}
+                                onClick={() => handleViewDeck(deck.id)}
                                 actions={[
                                     <EditOutlined
                                         key="edit"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleEditDeck(deck.deckName);
+                                            handleEditDeck(deck.id);
                                         }}
                                     />,
                                     <Popconfirm

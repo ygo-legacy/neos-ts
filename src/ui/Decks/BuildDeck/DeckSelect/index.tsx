@@ -22,9 +22,9 @@ const DEFAULT_DECK_CASE = 1082012;
 
 export const DeckSelect: React.FC<{
   decks: IDeck[];
-  selected: string;
-  onSelect: (deckName: string) => any;
-  onDelete: (deckName: string) => Promise<any>;
+  selected: string; // Deck ID
+  onSelect: (deckId: string) => any;
+  onDelete: (deckName: string) => Promise<any>; // Still use name for delete
   onDownload: (deckName: string) => any;
   onCopy: (deckName: string) => Promise<any>;
 }> = ({ decks, selected, onSelect, onDelete, onDownload, onCopy }) => {
@@ -35,13 +35,15 @@ export const DeckSelect: React.FC<{
   /** 创建卡组，直接给一个命名，用户可以手动修改，无需modal打断流程 */
   const createNewDeck = async () => {
     const deckName = new Date().toLocaleString();
+    const id = crypto.randomUUID();
     await deckStore.add({
+      id,
       deckName,
       main: [],
       extra: [],
       side: [],
     });
-    onSelect(deckName);
+    onSelect(id);
   };
 
   const showUploadModal = () =>
@@ -84,15 +86,17 @@ export const DeckSelect: React.FC<{
           ) {
             // YDK解析成功
             const deckName = new Date().toLocaleString();
+            const id = crypto.randomUUID();
             deckStore
               .add({
+                id,
                 deckName,
                 ...deck,
               })
               .then((result) => {
                 if (result) {
                   message.success(`导入成功，卡组名为：${deckName}`);
-                  onSelect(deckName);
+                  onSelect(id);
                 } else {
                   message.error(`解析失败，请检查格式是否正确。`);
                 }
@@ -160,12 +164,12 @@ export const DeckSelect: React.FC<{
       <div className={styles["deck-select"]}>
         {decks.map((deck) => (
           <div
-            key={deck.deckName}
+            key={deck.id}
             className={styles.item}
-            onClick={() => onSelect(deck.deckName)}
+            onClick={() => onSelect(deck.id)}
           >
             <div className={styles.hover} />
-            {selected === deck.deckName && <div className={styles.selected} />}
+            {selected === deck.id && <div className={styles.selected} />}
             <span>{deck.deckName}</span>
             <div className={styles.btns}>
               <Button

@@ -12,7 +12,7 @@ import { HTML5toTouch } from "rdndmb-html5-to-touch";
 import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd-multi-backend";
 import { useTranslation } from "react-i18next";
-import { LoaderFunction } from "react-router-dom";
+import { LoaderFunction, useNavigate } from "react-router-dom";
 import { proxy, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
 
@@ -93,6 +93,8 @@ export const Component: React.FC = () => {
 
   const { message } = App.useApp();
   const { t: i18n } = useTranslation("BuildDeck");
+  const navigate = useNavigate(); // Add hook
+
   const handleDeckEditorReset = async () => {
     editDeckStore.set(await iDeckToEditingDeck(selectedDeck.deck as IDeck));
     message.info(`${i18n("ResetSuccessful")}`);
@@ -128,10 +130,8 @@ export const Component: React.FC = () => {
           <ScrollableArea className={styles["deck-select-container"]}>
             <DeckSelect
               decks={snapDecks.decks as IDeck[]}
-              selected={snapSelectedDeck.deckName}
-              onSelect={(name) =>
-                setSelectedDeck(deckStore.get(name) ?? emptyDeck)
-              }
+              selected={snapSelectedDeck.id}
+              onSelect={(id) => navigate(`/decks/edit/${id}`)}
               onDelete={async (name) => await deckStore.delete(name)}
               onDownload={(name) => {
                 const deck = deckStore.get(name);

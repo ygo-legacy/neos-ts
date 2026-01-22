@@ -36,7 +36,7 @@ const router = createBrowserRouter([
         path: "/decks",
         lazy: () => import("./Decks"),
       },
-      // Build new deck (must be before :deckName to avoid conflict)
+      // Build new deck
       {
         path: "/decks/build",
         lazy: () => import("./Decks/Build"),
@@ -47,11 +47,22 @@ const router = createBrowserRouter([
       },
       // Edit existing deck
       {
-        path: "/decks/:deckName",
+        path: "/decks/edit/:deckId",
         lazy: () => import("./Decks/Edit"),
       },
       {
-        path: "/decks/:deckName/cards/:cardId",
+        path: "/decks/edit/:deckId/cards/:cardId",
+        lazy: () => import("./Decks/CardView"),
+      },
+      // Show deck (ReadOnly)
+      {
+        path: "/decks/show/:deckId",
+        lazy: () => import("./Decks/Show"),
+      },
+      {
+        path: "/decks/show/:deckId/cards/:cardId",
+        // Reuse card view or read-only view?
+        // Let's reuse CardView for consistent detail popup
         lazy: () => import("./Decks/CardView"),
       },
       // Legacy route - keep for testing, remove later
