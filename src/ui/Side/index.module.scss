@@ -27,9 +27,11 @@
   border-radius: 0.625rem;
   display: flex;
   flex-direction: column;
-  & > *:not(:last-of-type) {
+
+  &>*:not(:last-of-type) {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+
   .title {
     height: 2.75rem;
     flex: 0 0 2.75rem;
@@ -37,12 +39,14 @@
     padding: 1em 2em;
     font-size: 1rem;
   }
+
   .deck-zone {
     display: flex;
     flex-direction: column;
     height: 100%;
     --card-grid: 15;
   }
+
   background-color: hsla(0, 0%, 100%, 0.05);
   backdrop-filter: blur(0.3rem);
 }

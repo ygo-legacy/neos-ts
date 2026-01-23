@@ -36,53 +36,55 @@ export const DeckZone: React.FC<{
   onDoubleClick,
   is408,
 }) => {
-  const { message } = App.useApp();
-  const [allowToDrop, setAllowToDrop] = useState(false);
-  const [{ isOver }, dropRef] = useDrop({
-    accept: ["Card"], // 指明该区域允许接收的拖放物。可以是单个，也可以是数组
-    // 里面的值就是useDrag所定义的type
-    // 当拖拽物在这个拖放区域放下时触发,这个item就是拖拽物的item（拖拽物携带的数据）
-    drop: ({ value, source }: { value: CardMeta; source: Type | "search" }) => {
-      if (type === source) return;
-      const { result, reason } = canAdd(value, type, source);
-      if (result) {
-        onChange(value, source, type);
-      } else {
-        message.error(reason);
-      }
-    },
-    hover: ({ value, source }) => {
-      setAllowToDrop(
-        type !== source ? canAdd(value, type, source).result : true,
-      );
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  });
-  return (
-    <div
-      className={classNames(styles[type], {
-        [styles.over]: isOver,
-        [styles["not-allow-to-drop"]]: isOver && !allowToDrop,
-      })}
-      ref={dropRef}
-    >
-      <div className={styles["card-continer"]}>
-        {cards.map((card, i) => (
-          <DeckCard
-            value={card}
-            key={card.id + i + type}
-            source={type}
-            onMouseUp={onElementMouseUp}
-            onDoubleClick={onDoubleClick}
-            is408={is408}
-          />
-        ))}
+    const { message } = App.useApp();
+    const [allowToDrop, setAllowToDrop] = useState(false);
+    const [{ isOver }, dropRef] = useDrop({
+      accept: ["Card"], // 指明该区域允许接收的拖放物。可以是单个，也可以是数组
+      // 里面的值就是useDrag所定义的type
+      // 当拖拽物在这个拖放区域放下时触发,这个item就是拖拽物的item（拖拽物携带的数据）
+      drop: ({ value, source }: { value: CardMeta; source: Type | "search" }) => {
+        if (type === source) return;
+        const { result, reason } = canAdd(value, type, source);
+        if (result) {
+          onChange(value, source, type);
+        } else {
+          message.error(reason);
+        }
+      },
+      hover: ({ value, source }) => {
+        setAllowToDrop(
+          type !== source ? canAdd(value, type, source).result : true,
+        );
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    });
+    return (
+      <div
+        className={classNames(styles[type], {
+          [styles.over]: isOver,
+          [styles["not-allow-to-drop"]]: isOver && !allowToDrop,
+        })}
+        ref={dropRef}
+      >
+
         <div className={styles["editing-zone-name"]}>
           {`${type.toUpperCase()}: ${cards.length}`}
         </div>
+
+        <div className={styles["card-continer"]}>
+          {cards.map((card, i) => (
+            <DeckCard
+              value={card}
+              key={card.id + i + type}
+              source={type}
+              onMouseUp={onElementMouseUp}
+              onDoubleClick={onDoubleClick}
+              is408={is408}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
