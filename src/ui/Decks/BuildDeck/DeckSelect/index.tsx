@@ -161,6 +161,17 @@ export const DeckSelect: React.FC<{
 
   return (
     <>
+      <div className={styles.header}>
+        <span className={styles.title}>{i18n("DecksList", "Lista de Mazos")}</span>
+        <Dropdown menu={{ items }} placement="bottomRight" arrow trigger={["click"]}>
+          <Button
+            className={styles["btn-add"]}
+            icon={<PlusOutlined />}
+            type="text"
+            size="small"
+          />
+        </Dropdown>
+      </div>
       <div className={styles["deck-select"]}>
         {decks.map((deck) => (
           <div
@@ -209,15 +220,6 @@ export const DeckSelect: React.FC<{
           </div>
         ))}
       </div>
-      <Dropdown menu={{ items }} placement="top" arrow trigger={["click"]}>
-        <Button
-          className={styles["btn-add"]}
-          icon={<PlusOutlined />}
-          shape="circle"
-          type="text"
-          size="large"
-        />
-      </Dropdown>
     </>
   );
 };
@@ -247,7 +249,11 @@ const DeckUploader: React.FC<{ onLoaded: (deck: IDeck) => void }> = ({
 
         if (!(deck.main.length + deck.extra.length + deck.side.length === 0)) {
           // YDK解析成功
-          onLoaded({ deckName: file.name.replace(/\.ydk/g, ""), ...deck });
+          onLoaded({
+            id: crypto.randomUUID(),
+            deckName: file.name.replace(/\.ydk/g, ""),
+            ...deck,
+          });
         } else {
           message.error(`${file.name}解析失败，请检查格式是否正确。`);
           setUploadState("ERROR");

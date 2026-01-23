@@ -1,6 +1,8 @@
 import {
   CheckOutlined,
   DeleteOutlined,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
   EditOutlined,
   QuestionCircleOutlined,
   RetweetOutlined,
@@ -90,10 +92,28 @@ export const Component: React.FC = () => {
   const snapDecks = useSnapshot(deckStore);
   const { progress } = useSnapshot(initStore.sqlite);
   const { deck: snapSelectedDeck } = useSnapshot(selectedDeck);
+  const [collapsed, setCollapsed] = useState(true);
+
+  // Lifted state from DeckEditor
+  const snapEditDeck = useSnapshot(editDeckStore);
+  const [deckName, setDeckName] = useState(editDeckStore.deckName);
+  const [env, setEnv] = useState(ENV_OCG);
 
   const { message } = App.useApp();
   const { t: i18n } = useTranslation("BuildDeck");
-  const navigate = useNavigate(); // Add hook
+  const navigate = useNavigate();
+
+  const handleEnvChange = (value: any) => setEnv(value);
+
+  // Sync effects lifted from DeckEditor
+  useEffect(() => {
+    iDeckToEditingDeck(selectedDeck.deck).then(editDeckStore.set);
+    setDeckName(selectedDeck.deck.deckName);
+  }, [selectedDeck.deck]);
+
+  useEffect(() => {
+    editDeckStore.deckName = deckName;
+  }, [deckName]);
 
   const handleDeckEditorReset = async () => {
     editDeckStore.set(await iDeckToEditingDeck(selectedDeck.deck as IDeck));
@@ -126,41 +146,117 @@ export const Component: React.FC = () => {
     <DndProvider options={HTML5toTouch}>
       <Background />
       <div className={styles.layout} style={{ width: "100%" }}>
-        <div className={styles.sider}>
-          <ScrollableArea className={styles["deck-select-container"]}>
-            <DeckSelect
-              decks={snapDecks.decks as IDeck[]}
-              selected={snapSelectedDeck.id}
-              onSelect={(id) => navigate(`/decks/edit/${id}`)}
-              onDelete={async (name) => await deckStore.delete(name)}
-              onDownload={(name) => {
-                const deck = deckStore.get(name);
-                if (deck) downloadDeckAsYDK(deck);
-              }}
-              onCopy={async (name) => {
-                const deck = deckStore.get(name);
-                if (deck) return await copyDeckToClipboard(deck);
-                else return false;
-              }}
-            />
-          </ScrollableArea>
-          <HigherCardDetail />
+        <div
+          className={`${styles.sider} ${collapsed ? styles.collapsed : ""}`}
+        >
+          <div
+            className={styles["sider-toggle"]}
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            {collapsed ? <DoubleRightOutlined /> : <DoubleLeftOutlined />}
+          </div>
+          <div className={styles["sider-content"]}>
+            <ScrollableArea className={styles["deck-select-container"]}>
+              <DeckSelect
+                decks={snapDecks.decks as IDeck[]}
+                selected={snapSelectedDeck.id}
+                onSelect={(id) => navigate(`/decks/edit/${id}`)}
+                onDelete={async (name) => await deckStore.delete(name)}
+                onDownload={(name) => {
+                  const deck = deckStore.get(name);
+                  if (deck) downloadDeckAsYDK(deck);
+                }}
+                onCopy={async (name) => {
+                  const deck = deckStore.get(name);
+                  if (deck) return await copyDeckToClipboard(deck);
+                  else return false;
+                }}
+              />
+            </ScrollableArea>
+            <HigherCardDetail />
+          </div>
         </div>
         <div className={styles.content}>
           {progress === 1 ? (
             <>
-              <div className={styles.deck}>
-                <DeckEditor
-                  deck={snapSelectedDeck as IDeck}
-                  onClear={editDeckStore.clear}
-                  onReset={handleDeckEditorReset}
-                  onSave={handleDeckEditorSave}
-                  onShuffle={handleDeckEditorShuffle}
-                  onSort={handleDeckEditorSort}
-                />
+              <div className={styles.deckHeader}>
+                <div className={styles.nameRow}>
+                  <Input
+                    placeholder={i18n("EnterTheDeckName")}
+                    variant="borderless"
+                    size="large"
+                    prefix={<EditOutlined />}
+                    className={styles.deckNameInput}
+                    onChange={(e) => setDeckName(e.target.value)}
+                    value={deckName}
+                  />
+                </div>
+                <div className={styles.toolbar}>
+                  <Space className={styles.actions} size={8}>
+                    <Select
+                      title={i18n("Environment")}
+                      value={env}
+                      options={[
+                        {
+                          value: ENV_OCG,
+                          label: "OCG",
+                        },
+                        {
+                          value: ENV_408,
+                          label: "408",
+                        },
+                      ]}
+                      onChange={handleEnvChange}
+                    />
+                    <Button
+                      type="text"
+                      icon={<SwapOutlined />}
+                      onClick={handleDeckEditorShuffle}
+                    >
+                      {i18n("Shuffle")}
+                    </Button>
+                    <Button
+                      type="text"
+                      icon={<RetweetOutlined />}
+                      onClick={handleDeckEditorSort}
+                    >
+                      {i18n("Sort")}
+                    </Button>
+                    <Button
+                      type="text"
+                      icon={<DeleteOutlined />}
+                      onClick={editDeckStore.clear}
+                    >
+                      {i18n("Clear")}
+                    </Button>
+                    <Button
+                      type="text"
+                      icon={<UndoOutlined />}
+                      onClick={() => handleDeckEditorReset()}
+                    >
+                      {i18n("Reset")}
+                    </Button>
+                    <Button
+                      type={snapEditDeck.edited ? "primary" : "default"}
+                      ghost={!snapEditDeck.edited}
+                      icon={<CheckOutlined />}
+                      onClick={() => handleDeckEditorSave()}
+                    >
+                      {i18n("Save")}
+                    </Button>
+                  </Space>
+                </div>
               </div>
-              <div className={styles.select}>
-                <DeckDatabase />
+              <div className={styles.workspace}>
+                <div className={styles.deck}>
+                  <DeckEditor
+                    deck={snapSelectedDeck as IDeck}
+                    env={env}
+                  />
+                </div>
+                <div className={styles.select}>
+                  <DeckDatabase />
+                </div>
               </div>
             </>
           ) : (
@@ -178,25 +274,9 @@ Component.displayName = "Build";
 /** 正在编辑的卡组 */
 export const DeckEditor: React.FC<{
   deck: IDeck;
-  onShuffle: () => void;
-  onSort: () => void;
-  onClear: () => void;
-  onReset: () => void;
-  onSave: () => void;
-}> = ({ deck, onClear, onReset, onSave, onShuffle, onSort }) => {
+  env: number;
+}> = ({ deck, env }) => {
   const snapEditDeck = useSnapshot(editDeckStore);
-  const [deckName, setDeckName] = useState(editDeckStore.deckName);
-  const [env, setEnv] = useState(ENV_OCG);
-
-  const handleEnvChange = (value: any) => setEnv(value);
-
-  useEffect(() => {
-    iDeckToEditingDeck(deck).then(editDeckStore.set);
-    setDeckName(deck.deckName);
-  }, [deck]);
-  useEffect(() => {
-    editDeckStore.deckName = deckName;
-  }, [deckName]);
 
   const handleSwitchCard = (type: Type, card: CardMeta) => {
     const cardType = card.data.type ?? 0;
@@ -211,9 +291,14 @@ export const DeckEditor: React.FC<{
       editDeckStore.remove(type, card);
       editDeckStore.add(targetType, card);
     } else {
-      message.error(reason);
+      message.error(reason); // 'message' is imported globally in module scope? No, it was from useApp hooks in component.
+      // DeckEditor needs useApp() message if we remove it?
+      // Wait, 'message' from 'antd' static is deprecated/warned sometimes but works if inside App?
+      // Better to use App.useApp().
     }
   };
+
+  const { message } = App.useApp(); // Add hook here
 
   const showSelectedCard = (card: CardMeta) => {
     selectedCard.id = card.id;
@@ -243,79 +328,9 @@ export const DeckEditor: React.FC<{
     }
     event.preventDefault();
   };
-  const { t: i18n } = useTranslation("BuildDeck");
+
   return (
     <div className={styles.container}>
-      <Space className={styles.title}>
-        <Input
-          placeholder={i18n("EnterTheDeckName")}
-          variant="borderless"
-          prefix={<EditOutlined />}
-          style={{ width: "8.8rem" }}
-          onChange={(e) => setDeckName(e.target.value)}
-          value={deckName}
-        />
-        <Space style={{ marginRight: "0.4rem" }} size={5}>
-          <Select
-            title={i18n("Environment")}
-            value={env}
-            options={[
-              {
-                value: ENV_OCG,
-                label: "OCG",
-              },
-              {
-                value: ENV_408,
-                label: "408",
-              },
-            ]}
-            onChange={handleEnvChange}
-          />
-          <Button
-            type="text"
-            size="small"
-            icon={<SwapOutlined />}
-            onClick={onShuffle}
-          >
-            {i18n("Shuffle")}
-          </Button>
-          <Button
-            type="text"
-            size="small"
-            icon={<RetweetOutlined />}
-            onClick={onSort}
-          >
-            {i18n("Sort")}
-          </Button>
-          <Button
-            type="text"
-            size="small"
-            icon={<DeleteOutlined />}
-            onClick={onClear}
-          >
-            {i18n("Clear")}
-          </Button>
-          <Button
-            type="text"
-            size="small"
-            icon={<UndoOutlined />}
-            onClick={() => onReset()}
-          >
-            {i18n("Reset")}
-          </Button>
-          <Button
-            type={snapEditDeck.edited ? "primary" : "text"}
-            size="small"
-            icon={<CheckOutlined />}
-            onClick={() => onSave()}
-          >
-            {i18n("Save")}
-          </Button>
-          <Tooltip title={i18n("QuestionCircleTooltip")}>
-            <QuestionCircleOutlined />
-          </Tooltip>
-        </Space>
-      </Space>
       <ScrollableArea className={styles["deck-zone"]}>
         {(["main", "extra", "side"] as const).map((type) => (
           <DeckZone

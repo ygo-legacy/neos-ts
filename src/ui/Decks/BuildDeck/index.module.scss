@@ -1,11 +1,14 @@
 @use "/src/styles/utils.scss";
 
 .layout {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: var(--header-height);
-  height: calc(100% - var(--header-height));
+  min-height: calc(100% - var(--header-height));
+  width: 100%;
   display: flex;
+  padding-top: 1rem;
+  box-sizing: border-box;
 }
 
 .sider {
@@ -14,25 +17,133 @@
   flex: 0 0 var(--sider-width);
   background: transparent !important;
   position: relative;
-  .deck-select-container {
-    max-height: 100%;
-    min-height: 100%;
-    padding-bottom: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+
+  &.collapsed {
+    width: 2rem;
+    flex: 0 0 2rem;
+
+    .sider-content {
+      display: none;
+    }
+  }
+
+  .sider-toggle {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1rem;
+
+    &:hover {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .sider-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    .deck-select-container {
+      flex: 1;
+      overflow: hidden;
+      padding-bottom: 1rem;
+    }
   }
 }
 
 .content {
   display: flex;
+  flex-direction: column;
   flex: 1;
   padding-bottom: 0;
   padding-right: 1rem;
-  .deck {
-    width: 41.25rem;
-  }
-  .select {
+  min-width: 0;
+
+  .workspace {
+    display: flex;
     flex: 1;
-    .select-btns {
-      padding: 0.3rem 0.625rem;
+    min-height: 0;
+    gap: 1rem;
+
+    .deck {
+      width: 41.25rem;
+      height: calc(100vh - var(--header-height) - 2rem);
+      position: sticky;
+      top: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .select {
+      flex: 1;
+      height: calc(100vh - var(--header-height) - 2rem);
+      position: sticky;
+      top: 1rem;
+      display: flex;
+      flex-direction: column;
+
+      .select-btns {
+        padding: 0.3rem 0.625rem;
+        display: flex;
+        gap: 0.5rem;
+      }
+    }
+  }
+}
+
+.deckHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  .nameRow {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+
+    .deckNameInput {
+      width: 100%;
+      max-width: 40rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: transparent;
+      box-shadow: none;
+
+      input {
+        font-weight: bold;
+      }
+
+      &:hover,
+      &:focus {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding: 0 0.25rem;
+    border-radius: 5px;
+    background: mediumpurple;
+    margin-bottom: 0.75rem;
+
+    .actions {
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      backdrop-filter: blur(4px);
       display: flex;
       gap: 0.5rem;
     }
@@ -41,35 +152,90 @@
 
 .container {
   width: -webkit-fill-available;
-  height: calc(100% - 1.25rem);
+  flex: 1;
   border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  & > *:not(:last-of-type) {
+  background-color: hsla(0, 0%, 100%, 0.05);
+  backdrop-filter: blur(0.3rem);
+  // overflow and height controlled by specific modifiers
+
+
+  &>*:not(:last-of-type) {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+
   .title {
-    height: 2.75rem;
-    flex: 0 0 2.75rem;
-    justify-content: space-between;
+    // Deprecated
+    display: none;
   }
+
   .deck-zone {
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow-y: auto;
     --card-grid: 10;
+    padding: 1rem;
+    gap: 1rem;
+
+    &>div {
+      min-height: 8rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: var(--border-radius);
+      padding: 0.5rem;
+      transition: all 0.3s;
+    }
+
+    &>div:first-child {
+      flex: 1;
+      min-height: 20rem;
+    }
   }
-  background-color: hsla(0, 0%, 100%, 0.05);
-  backdrop-filter: blur(0.3rem);
+}
+
+.dbHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: rgba(18, 18, 18, 0.6);
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .select-btns {
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      flex: 1;
+    }
+  }
 }
 
 .deck .container {
   border-radius: var(--border-radius) 0 0 var(--border-radius);
+  flex: 1;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .select .container {
   border-left: none;
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  flex: 1;
+  height: auto;
+  // Keep visible/hidden as needed. Inner 'search-cards' handles scroll.
+  overflow: hidden;
 }
 
 .search-cards-container {

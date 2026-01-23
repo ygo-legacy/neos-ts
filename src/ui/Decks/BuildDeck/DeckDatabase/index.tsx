@@ -123,104 +123,108 @@ export const DeckDatabase: React.FC = () => {
   }, []);
   const { t: i18n } = useTranslation("BuildDeck");
   return (
-    <div className={styles.container} ref={dropRef}>
-      <Space className={styles.title} direction="horizontal">
-        <Input
-          placeholder={i18n("KeywordsPlaceholder")}
-          variant="borderless"
-          suffix={
-            <Button
-              type="text"
-              icon={<SearchOutlined />}
-              onClick={() => handleSearch()}
-            />
-          }
-          value={searchWord}
-          onChange={(e) => setSearchWord(e.target.value)}
-          onKeyUp={(e) => e.key === "Enter" && handleSearch()}
-          allowClear
-          style={{ width: "250%" }}
-        />
-        <Button
-          style={{ marginRight: "1rem" }}
-          icon={<SwapOutlined />}
-          onClick={() => setShowMdproDecks(!showMdproDecks)}
-        >
-          {showMdproDecks ? i18n("CardDatabase") : i18n("MDProOnlineDeck")}
-        </Button>
-      </Space>
-      <div className={styles["select-btns"]}>
-        {showMdproDecks ? (
-          <Select
-            title=""
-            style={{ width: "18.90rem" }}
-            defaultValue={false}
-            options={[
-              { value: true, label: i18n("OnlyShowDecksIUploaded") },
-              { value: false, label: i18n("ShowAllOnlineDecks") },
-            ]}
-            onChange={
-              // @ts-ignore
-              (value) => freshMdrpoDecks(searchWord, value)
+    <>
+      <div className={styles.dbHeader}>
+        <Space className={styles.title} direction="horizontal">
+          <Input
+            placeholder={i18n("KeywordsPlaceholder")}
+            variant="borderless"
+            suffix={
+              <Button
+                type="text"
+                icon={<SearchOutlined />}
+                onClick={() => handleSearch()}
+              />
             }
+            value={searchWord}
+            onChange={(e) => setSearchWord(e.target.value)}
+            onKeyUp={(e) => e.key === "Enter" && handleSearch()}
+            allowClear
+            style={{ width: "250%" }}
           />
-        ) : (
           <Button
-            block
-            type={
-              isEqual(emptySearchConditions, searchConditions)
-                ? "text"
-                : "primary"
-            }
+            style={{ marginRight: "1rem" }}
+            icon={<SwapOutlined />}
+            onClick={() => setShowMdproDecks(!showMdproDecks)}
+          >
+            {showMdproDecks ? i18n("CardDatabase") : i18n("MDProOnlineDeck")}
+          </Button>
+        </Space>
+        <div className={styles["select-btns"]}>
+          {showMdproDecks ? (
+            <Select
+              title=""
+              style={{ width: "18.90rem" }}
+              defaultValue={false}
+              options={[
+                { value: true, label: i18n("OnlyShowDecksIUploaded") },
+                { value: false, label: i18n("ShowAllOnlineDecks") },
+              ]}
+              onChange={
+                // @ts-ignore
+                (value) => freshMdrpoDecks(searchWord, value)
+              }
+            />
+          ) : (
+            <Button
+              block
+              type={
+                isEqual(emptySearchConditions, searchConditions)
+                  ? "text"
+                  : "primary"
+              }
+              disabled={showMdproDecks}
+              icon={<FilterOutlined />}
+              onClick={showFilterModal}
+            >
+              {i18n("Filter")}
+            </Button>
+          )}
+          <Dropdown
+            menu={{ items: dropdownOptions }}
             disabled={showMdproDecks}
-            icon={<FilterOutlined />}
-            onClick={showFilterModal}
+            trigger={["click"]}
+            placement="bottom"
+            arrow
           >
-            {i18n("Filter")}
-          </Button>
-        )}
-        <Dropdown
-          menu={{ items: dropdownOptions }}
-          disabled={showMdproDecks}
-          trigger={["click"]}
-          placement="bottom"
-          arrow
-        >
+            <Button
+              block
+              type={sortEdited ? "primary" : "text"}
+              icon={<SortAscendingOutlined />}
+            >
+              <span>
+                {i18n("SortBy")}
+                <span className={styles["search-count"]}>
+                  ({searchCardResult.length})
+                </span>
+              </span>
+            </Button>
+          </Dropdown>
           <Button
             block
-            type={sortEdited ? "primary" : "text"}
-            icon={<SortAscendingOutlined />}
+            type="text"
+            disabled={showMdproDecks}
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              setSearchConditions(emptySearchConditions);
+              setSortRef(defaultSort);
+              setSortEdited(false);
+              handleSearch(emptySearchConditions);
+            }}
           >
-            <span>
-              {i18n("SortBy")}
-              <span className={styles["search-count"]}>
-                ({searchCardResult.length})
-              </span>
-            </span>
+            {i18n("Reset")}
           </Button>
-        </Dropdown>
-        <Button
-          block
-          type="text"
-          disabled={showMdproDecks}
-          icon={<DeleteOutlined />}
-          onClick={() => {
-            setSearchConditions(emptySearchConditions);
-            setSortRef(defaultSort);
-            setSortEdited(false);
-            handleSearch(emptySearchConditions);
-          }}
-        >
-          {i18n("Reset")}
-        </Button>
+        </div>
       </div>
-      <ScrollableArea className={styles["search-cards-container"]} ref={ref}>
-        {showMdproDecks ? (
-          <DeckResults />
-        ) : (
-          <CardResults results={searchCardResult} scrollToTop={scrollToTop} />
-        )}
-      </ScrollableArea>
-    </div>
+      <div className={styles.container} ref={dropRef}>
+        <ScrollableArea className={styles["search-cards-container"]} ref={ref}>
+          {showMdproDecks ? (
+            <DeckResults />
+          ) : (
+            <CardResults results={searchCardResult} scrollToTop={scrollToTop} />
+          )}
+        </ScrollableArea>
+      </div>
+    </>
   );
 };

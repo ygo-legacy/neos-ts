@@ -87,7 +87,7 @@ export const CardResults: React.FC<{
             ))}
           </div>
           {results.length > itemsPerPage && (
-            <div style={{ textAlign: "center", padding: "0.625rem 0 1.25rem" }}>
+            <div className={styles["pagination-container"]}>
               <Pagination
                 current={currentPage}
                 onChange={(page) => {
