@@ -6,9 +6,9 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, Descriptions, type DescriptionsProps } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { type CardMeta, fetchCard, fetchStrings, Region } from "@/api";
+import { type CardMeta, fetchCard, fetchStrings, Region, searchCards } from "@/api";
 import {
     Attribute2StringCodeMap,
     extraCardTypes,
@@ -18,6 +18,8 @@ import {
     Race2StringCodeMap,
     Type2StringCodeMap,
 } from "@/common";
+import { emptySearchConditions } from "@/middleware/sqlite/fts";
+import { DatabaseCard } from "@/ui/Database/DatabaseCard";
 import { Background, CardEffectText, ScrollableArea, YgoCard } from "@/ui/Shared";
 
 import styles from "./index.module.scss";
@@ -25,18 +27,44 @@ import styles from "./index.module.scss";
 export const loader = () => null;
 
 export const Component: React.FC = () => {
-    const { cardId, deckName } = useParams<{ cardId: string; deckName?: string }>();
+    const { cardId, deckId } = useParams<{ cardId: string; deckId: string }>();
     const navigate = useNavigate();
     const { t: i18n } = useTranslation("CardDetails");
 
     const code = parseInt(cardId || "0", 10);
     const [card, setCard] = useState<CardMeta>();
+    const [relatedCards, setRelatedCards] = useState<CardMeta[]>([]);
 
     useEffect(() => {
         if (code) {
             setCard(fetchCard(code));
         }
     }, [code]);
+
+    useEffect(() => {
+        if (!card?.data.setcode) {
+            setRelatedCards([]);
+            return;
+        }
+        const setcode = card.data.setcode;
+        if (setcode === 0) return;
+
+        const timer = setTimeout(() => {
+            try {
+                const results = searchCards({
+                    query: "",
+                    conditions: {
+                        ...emptySearchConditions,
+                        setcode: setcode,
+                    },
+                });
+                setRelatedCards(results.filter((c) => c.id !== code).slice(0, 12));
+            } catch (e) {
+                console.error(e);
+            }
+        }, 100);
+        return () => clearTimeout(timer);
+    }, [card, code]);
 
     const cardType = useMemo(
         () =>
@@ -171,6 +199,24 @@ export const Component: React.FC = () => {
                         </ScrollableArea>
                     </div>
                 </div>
+
+                {relatedCards.length > 0 && (
+                    <div className={styles.relatedSection}>
+                        <h2 className={styles.sectionTitle}>{i18n("RelatedCards", "Cartas Relacionadas")}</h2>
+                        <div className={styles.relatedGrid}>
+                            {relatedCards.map((c) => (
+                                <Link
+                                    key={c.id}
+                                    to={`../${c.id}`}
+                                    relative="path"
+                                    className={styles.relatedCardItem}
+                                >
+                                    <DatabaseCard value={c} />
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

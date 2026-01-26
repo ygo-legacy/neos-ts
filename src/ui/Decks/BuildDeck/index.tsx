@@ -50,7 +50,7 @@ import { CardDetail } from "./CardDetail";
 import { DeckDatabase } from "./DeckDatabase";
 import { DeckSelect, DeckUploader } from "./DeckSelect";
 import styles from "./index.module.scss";
-import { editDeckStore } from "./store";
+import { editDeckStore, selectedCard } from "./store";
 import {
   copyDeckToClipboard,
   downloadDeckAsYDK,
@@ -89,11 +89,6 @@ export const loader: LoaderFunction = async () => {
 
   return null;
 };
-
-export const selectedCard = proxy({
-  id: 23995346,
-  open: false,
-});
 
 const selectedDeck = proxy<{ deck: IDeck }>({
   deck: deckStore.decks.at(0) ?? emptyDeck,

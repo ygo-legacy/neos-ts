@@ -7,6 +7,11 @@ import { Type } from "@/ui/Shared/DeckZone";
 
 import { compareCards, type EditingDeck } from "./utils";
 
+export const selectedCard = proxy({
+  id: 23995346,
+  open: false,
+});
+
 // Define the possible language codes (I18N)
 type Language = "en" | "br" | "pt" | "fr" | "ja" | "ko" | "es" | "cn";
 

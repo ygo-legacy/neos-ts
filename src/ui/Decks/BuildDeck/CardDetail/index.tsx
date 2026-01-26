@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { type CardMeta, fetchCard, fetchStrings, Region } from "@/api";
+import { CardMeta, fetchCard, fetchStrings, Region, searchCards } from "@/api";
 import {
   Attribute2StringCodeMap,
   extraCardTypes,
@@ -13,8 +13,11 @@ import {
   Race2StringCodeMap,
   Type2StringCodeMap,
 } from "@/common";
+import { emptySearchConditions } from "@/middleware/sqlite/fts";
+import { DatabaseCard } from "@/ui/Database/DatabaseCard";
 import { CardEffectText, IconFont, ScrollableArea, YgoCard } from "@/ui/Shared";
 
+import { selectedCard } from "../store";
 import styles from "./index.module.scss";
 
 export const CardDetail: React.FC<{
@@ -105,6 +108,33 @@ export const CardDetail: React.FC<{
     return result;
   }, [card]);
 
+  const [relatedCards, setRelatedCards] = useState<CardMeta[]>([]);
+
+  useEffect(() => {
+    if (!card?.data.setcode) {
+      setRelatedCards([]);
+      return;
+    }
+    const setcode = card.data.setcode;
+    if (setcode === 0) return;
+
+    const timer = setTimeout(() => {
+      try {
+        const results = searchCards({
+          query: "",
+          conditions: {
+            ...emptySearchConditions,
+            setcode: setcode,
+          },
+        });
+        setRelatedCards(results.filter((c) => c.id !== code).slice(0, 12));
+      } catch (e) {
+        console.error(e);
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [card, code]);
+
   return (
     <div className={classNames(styles.detail, { [styles.open]: open })}>
       <div className={styles.container}>
@@ -143,6 +173,26 @@ export const CardDetail: React.FC<{
               children: <CardEffectText desc={d} />,
             }))}
           ></Descriptions>
+          {relatedCards.length > 0 && (
+            <div className={styles.relatedSection}>
+              <div className={styles.sectionTitle}>
+                {i18n("RelatedCards", "Cartas relacionadas")}
+              </div>
+              <div className={styles.relatedGrid}>
+                {relatedCards.map((c) => (
+                  <div
+                    key={c.id}
+                    className={styles.relatedCardItem}
+                    onClick={() => {
+                      selectedCard.id = c.id;
+                    }}
+                  >
+                    <DatabaseCard value={c} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </ScrollableArea>
       </div>
     </div>
