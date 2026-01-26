@@ -4,6 +4,7 @@ import { type IDeck } from "@/stores";
 
 /** 用在卡组编辑 */
 export interface EditingDeck {
+  id: string; // Add id
   deckName: string;
   main: CardMeta[];
   extra: CardMeta[];
@@ -13,6 +14,7 @@ export interface EditingDeck {
 export const iDeckToEditingDeck = async (
   ideck: IDeck,
 ): Promise<EditingDeck> => ({
+  id: ideck.id,
   deckName: ideck.deckName,
   main: await Promise.all(ideck.main.map(fetchCard)),
   extra: await Promise.all(ideck.extra.map(fetchCard)),
@@ -20,6 +22,7 @@ export const iDeckToEditingDeck = async (
 });
 
 export const editingDeckToIDeck = (deck: EditingDeck): IDeck => ({
+  id: deck.id,
   deckName: deck.deckName,
   main: deck.main.map((card) => card.id),
   extra: deck.extra.map((card) => card.id),

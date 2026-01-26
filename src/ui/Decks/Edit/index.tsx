@@ -17,10 +17,9 @@ export const loader: LoaderFunction = async ({ params }) => {
     // Run the BuildDeck loader first to ensure all dependencies are loaded
     await buildDeckLoader({ params, request: new Request("") } as any);
 
-    // Decode the deck name from URL
-    const deckName = params.deckName ? decodeURIComponent(params.deckName) : null;
+    const deckId = params.deckId;
 
-    if (!deckName) {
+    if (!deckId) {
         return redirect("/decks");
     }
 
@@ -32,7 +31,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     }
 
     // Find the deck
-    const deck = deckStore.get(deckName);
+    const deck = deckStore.getById(deckId);
     if (!deck) {
         // Deck not found, redirect to decks list
         return redirect("/decks");
@@ -42,26 +41,25 @@ export const loader: LoaderFunction = async ({ params }) => {
     setSelectedDeck(deck);
 
     changeScene(AudioActionType.BGM_DECK);
-    return { deckName, deck };
+    return { deckId, deck };
 };
 
 export const Component: React.FC = () => {
-    const { deckName } = useParams<{ deckName: string }>();
+    const { deckId } = useParams<{ deckId: string }>();
     const navigate = useNavigate();
     const { message } = App.useApp();
 
     useEffect(() => {
-        if (deckName) {
-            const decodedName = decodeURIComponent(deckName);
-            const deck = deckStore.get(decodedName);
+        if (deckId) {
+            const deck = deckStore.getById(deckId);
             if (deck) {
                 setSelectedDeck(deck);
             } else {
-                message.error(`Deck "${decodedName}" not found`);
+                message.error(`Deck not found`);
                 navigate("/decks");
             }
         }
-    }, [deckName]);
+    }, [deckId]);
 
     return <BuildDeckComponent />;
 };

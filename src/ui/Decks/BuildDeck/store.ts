@@ -7,6 +7,11 @@ import { Type } from "@/ui/Shared/DeckZone";
 
 import { compareCards, type EditingDeck } from "./utils";
 
+export const selectedCard = proxy({
+  id: 23995346,
+  open: false,
+});
+
 // Define the possible language codes (I18N)
 type Language = "en" | "br" | "pt" | "fr" | "ja" | "ko" | "es" | "cn";
 
@@ -91,6 +96,7 @@ const cannotAddTokens = messages[language].cannotAddTokens;
 /* End of definition (I18N) */
 
 export const editDeckStore = proxy({
+  id: "",
   deckName: "",
   main: [] as CardMeta[],
   extra: [] as CardMeta[],
@@ -113,6 +119,7 @@ export const editDeckStore = proxy({
     }
   },
   set(deck: EditingDeck) {
+    editDeckStore.id = deck.id;
     editDeckStore.deckName = deck.deckName;
     editDeckStore.main = deck.main;
     editDeckStore.extra = deck.extra.sort(compareCards);

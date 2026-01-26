@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { type CardMeta, fetchCard, fetchStrings, Region } from "@/api";
+import { CardMeta, fetchCard, fetchStrings, Region, searchCards } from "@/api";
 import {
   Attribute2StringCodeMap,
   extraCardTypes,
@@ -13,8 +13,11 @@ import {
   Race2StringCodeMap,
   Type2StringCodeMap,
 } from "@/common";
+import { emptySearchConditions } from "@/middleware/sqlite/fts";
+import { DatabaseCard } from "@/ui/Database/DatabaseCard";
 import { CardEffectText, IconFont, ScrollableArea, YgoCard } from "@/ui/Shared";
 
+import { selectedCard } from "../store";
 import styles from "./index.module.scss";
 
 export const CardDetail: React.FC<{
@@ -105,17 +108,51 @@ export const CardDetail: React.FC<{
     return result;
   }, [card]);
 
+  const [relatedCards, setRelatedCards] = useState<CardMeta[]>([]);
+
+  useEffect(() => {
+    if (!card?.data.setcode) {
+      setRelatedCards([]);
+      return;
+    }
+    const setcode = card.data.setcode;
+    if (setcode === 0) return;
+
+    const timer = setTimeout(() => {
+      try {
+        const results = searchCards({
+          query: "",
+          conditions: {
+            ...emptySearchConditions,
+            setcode: setcode,
+          },
+        });
+        setRelatedCards(results.filter((c) => c.id !== code).slice(0, 12));
+      } catch (e) {
+        console.error(e);
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [card, code]);
+
   return (
     <div className={classNames(styles.detail, { [styles.open]: open })}>
       <div className={styles.container}>
-        <Button
-          className={styles["btn-close"]}
-          icon={<IconFont type="icon-side-bar-fill" size={16} />}
-          type="text"
-          onClick={onClose}
-        />
+        {/* Internal close button removed */}
         <a href={`https://ygocdb.com/card/${code}`} target="_blank">
           <YgoCard className={styles.card} code={code} />
+        </a>
+        <a
+          href={`https://ygocdb.com/card/${code}`}
+          target="_blank"
+          style={{
+            color: "rgba(255, 255, 255, 0.5)",
+            marginTop: "0.5rem",
+            fontSize: "0.8rem",
+            textDecoration: "underline",
+          }}
+        >
+          YGOCDB
         </a>
         <div className={styles.title}>
           <span>{card?.text.name}</span>
@@ -136,6 +173,26 @@ export const CardDetail: React.FC<{
               children: <CardEffectText desc={d} />,
             }))}
           ></Descriptions>
+          {relatedCards.length > 0 && (
+            <div className={styles.relatedSection}>
+              <div className={styles.sectionTitle}>
+                {i18n("RelatedCards", "Cartas relacionadas")}
+              </div>
+              <div className={styles.relatedGrid}>
+                {relatedCards.map((c) => (
+                  <div
+                    key={c.id}
+                    className={styles.relatedCardItem}
+                    onClick={() => {
+                      selectedCard.id = c.id;
+                    }}
+                  >
+                    <DatabaseCard value={c} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </ScrollableArea>
       </div>
     </div>

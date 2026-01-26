@@ -1,0 +1,113 @@
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.content {
+    width: 100%;
+    max-width: 1200px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title {
+    color: #fff;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.backButton {
+    color: rgba(255, 255, 255, 0.8);
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+.deckArea {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.statCard {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    min-width: 100px;
+
+    .statLabel {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .statValue {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+}
+
+.zones {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    --card-grid: 10;
+
+    @media (max-width: 1600px) {
+        --card-grid: 8;
+    }
+
+    @media (max-width: 1200px) {
+        --card-grid: 6;
+    }
+
+    @media (max-width: 800px) {
+        --card-grid: 4;
+    }
+}
+
+.zoneSection {
+    h3 {
+        color: rgba(255, 255, 255, 0.6);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    // Customize DeckZone appearance for read-only
+    :global(.main),
+    :global(.extra),
+    :global(.side) {
+        min-height: auto !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+    }
+}
