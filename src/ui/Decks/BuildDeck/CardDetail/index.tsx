@@ -108,14 +108,21 @@ export const CardDetail: React.FC<{
   return (
     <div className={classNames(styles.detail, { [styles.open]: open })}>
       <div className={styles.container}>
-        <Button
-          className={styles["btn-close"]}
-          icon={<IconFont type="icon-side-bar-fill" size={16} />}
-          type="text"
-          onClick={onClose}
-        />
+        {/* Internal close button removed */}
         <a href={`https://ygocdb.com/card/${code}`} target="_blank">
           <YgoCard className={styles.card} code={code} />
+        </a>
+        <a
+          href={`https://ygocdb.com/card/${code}`}
+          target="_blank"
+          style={{
+            color: "rgba(255, 255, 255, 0.5)",
+            marginTop: "0.5rem",
+            fontSize: "0.8rem",
+            textDecoration: "underline",
+          }}
+        >
+          YGOCDB
         </a>
         <div className={styles.title}>
           <span>{card?.text.name}</span>

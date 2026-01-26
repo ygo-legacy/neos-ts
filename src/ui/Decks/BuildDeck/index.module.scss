@@ -1,6 +1,7 @@
 @use "/src/styles/utils.scss";
 
-.layout {
+.layout,
+.layout-scroll {
   position: absolute;
   left: 0;
   top: var(--header-height);
@@ -11,51 +12,52 @@
   box-sizing: border-box;
 }
 
-.sider {
-  --sider-width: 18.75rem;
-  width: var(--sider-width);
-  flex: 0 0 var(--sider-width);
-  background: transparent !important;
+.layout-scroll {
   position: relative;
-  transition: all 0.3s ease;
+  height: auto;
+  overflow-y: auto;
+  padding-bottom: 2rem;
+}
+
+.detailPanel {
+  width: 18.75rem;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 
-  &.collapsed {
-    width: 2rem;
-    flex: 0 0 2rem;
+  background: rgba(18, 18, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  overflow-y: auto; // Enable scroll
+  backdrop-filter: blur(5px);
 
-    .sider-content {
-      display: none;
-    }
-  }
-
-  .sider-toggle {
-    height: 2rem;
+  .folder-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
-    &:hover {
-      color: white;
-      background-color: rgba(255, 255, 255, 0.1);
+    .title {
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
     }
-  }
 
-  .sider-content {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+    .btn-close-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.6);
 
-    .deck-select-container {
-      flex: 1;
-      overflow: hidden;
-      padding-bottom: 1rem;
+      &:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+      }
     }
   }
 }
@@ -109,6 +111,7 @@
   .nameRow {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 0.5rem;
 
     .deckNameInput {
@@ -126,6 +129,28 @@
       &:hover,
       &:focus {
         background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    .headerActions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-left: 1rem;
+
+      button {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          color: white;
+          background: rgba(255, 255, 255, 0.1);
+        }
       }
     }
   }
@@ -146,6 +171,34 @@
       backdrop-filter: blur(4px);
       display: flex;
       gap: 0.5rem;
+    }
+  }
+
+  .saveBtn {
+    background-color: #52c41a; // Green for success/save
+    border-color: #52c41a;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(82, 196, 26, 0.5);
+    animation: pulse 2s infinite;
+
+    &:hover {
+      background-color: #73d13d;
+      border-color: #73d13d;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(82, 196, 26, 0.7);
+    }
+
+    70% {
+      box-shadow: 0 0 0 10px rgba(82, 196, 26, 0);
+    }
+
+    100% {
+      box-shadow: 0 0 0 0 rgba(82, 196, 26, 0);
     }
   }
 }
@@ -201,10 +254,81 @@
   gap: 0.5rem;
   margin-bottom: 0.5rem;
   background: rgba(18, 18, 18, 0.6);
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-radius: var(--border-radius);
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+
+  .mdproSwitchRow {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+  }
+
+  .mdproBtn {
+    background-color: #906afe; // Purple similar to screenshot
+    color: white;
+    border: none;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #7a52e6;
+      color: white;
+    }
+  }
+
+  .title {
+    width: 100%;
+
+    :global(.ant-input-affix-wrapper) {
+      width: 100%;
+      background: #0f0f0f;
+      border-color: #333;
+      padding-right: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-left: 1rem;
+      border-radius: 6px;
+      align-items: center;
+
+      input {
+        background: transparent !important;
+        color: white;
+        height: 3rem; // Force height for large input
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      :global(.ant-input-suffix) {
+        margin: 0;
+      }
+
+      .ant-btn {
+        height: 3rem; // Match input height
+        width: 3.5rem;
+        border-radius: 0 5px 5px 0;
+        background: #906afe;
+        color: white;
+        border: none;
+        margin-right: -1px; // Ensure it touches border if needed
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          background: #7a52e6;
+          color: white;
+        }
+
+        span {
+          font-size: 1.25rem;
+        }
+      }
+    }
+  }
 
   .title {
     display: flex;

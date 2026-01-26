@@ -125,13 +125,24 @@ export const DeckDatabase: React.FC = () => {
   return (
     <>
       <div className={styles.dbHeader}>
-        <Space className={styles.title} direction="horizontal">
+        <div className={styles.mdproSwitchRow}>
+          <Button
+            className={styles.mdproBtn}
+            icon={<SwapOutlined />}
+            onClick={() => setShowMdproDecks(!showMdproDecks)}
+          >
+            {showMdproDecks ? i18n("CardDatabase") : i18n("MDProOnlineDeck")}
+          </Button>
+        </div>
+        <div className={styles.title}>
           <Input
             placeholder={i18n("KeywordsPlaceholder")}
-            variant="borderless"
+            variant="outlined"
+            size="large"
             suffix={
               <Button
                 type="text"
+                size="small"
                 icon={<SearchOutlined />}
                 onClick={() => handleSearch()}
               />
@@ -140,16 +151,9 @@ export const DeckDatabase: React.FC = () => {
             onChange={(e) => setSearchWord(e.target.value)}
             onKeyUp={(e) => e.key === "Enter" && handleSearch()}
             allowClear
-            style={{ width: "250%" }}
+            style={{ width: "100%" }}
           />
-          <Button
-            style={{ marginRight: "1rem" }}
-            icon={<SwapOutlined />}
-            onClick={() => setShowMdproDecks(!showMdproDecks)}
-          >
-            {showMdproDecks ? i18n("CardDatabase") : i18n("MDProOnlineDeck")}
-          </Button>
-        </Space>
+        </div>
         <div className={styles["select-btns"]}>
           {showMdproDecks ? (
             <Select

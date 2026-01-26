@@ -163,20 +163,13 @@ export const DeckSelect: React.FC<{
     <>
       <div className={styles.header}>
         <span className={styles.title}>{i18n("DecksList", "Lista de Mazos")}</span>
-        <Dropdown menu={{ items }} placement="bottomRight" arrow trigger={["click"]}>
-          <Button
-            className={styles["btn-add"]}
-            icon={<PlusOutlined />}
-            type="text"
-            size="small"
-          />
-        </Dropdown>
       </div>
       <div className={styles["deck-select"]}>
         {decks.map((deck) => (
           <div
             key={deck.id}
-            className={styles.item}
+            className={`${styles.item} ${selected === deck.id ? styles.active : ""
+              }`}
             onClick={() => onSelect(deck.id)}
           >
             <div className={styles.hover} />
@@ -224,7 +217,7 @@ export const DeckSelect: React.FC<{
   );
 };
 
-const DeckUploader: React.FC<{ onLoaded: (deck: IDeck) => void }> = ({
+export const DeckUploader: React.FC<{ onLoaded: (deck: IDeck) => void }> = ({
   onLoaded,
 }) => {
   const [uploadState, setUploadState] = useState("");
