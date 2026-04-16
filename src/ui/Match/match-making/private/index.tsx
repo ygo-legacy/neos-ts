@@ -3,11 +3,7 @@ import { App, Tooltip } from "antd";
 import { useTranslation } from "react-i18next";
 import { useSnapshot } from "valtio";
 
-import {
-    getCreateRoomPasswd,
-    getJoinRoomPasswd,
-    getPrivateRoomID,
-} from "@/api";
+import { getPrivateRoomID } from "@/api";
 import { useConfig } from "@/config";
 import { accountStore } from "@/stores";
 import { ScrollableArea } from "@/ui/Shared";
@@ -32,45 +28,34 @@ export const PrivateMode: React.FC = () => {
     // Bloquear si está en cola de ranked
     const isBlocked = matchmaking.inQueue;
 
-    // Crear sala privada MC
+    // Crear sala privada
     const onCreateRoom = async () => {
         if (user) {
-            const mcServer = serverList.find(
-                (server) => server.name === "mycard-custom"
+            const localServer = serverList.find(
+                (server) => server.name === "ygo-legacy"
             );
-            if (mcServer) {
-                const passWd = getCreateRoomPasswd(
-                    mcCustomRoomStore.options,
-                    String(getPrivateRoomID(user.external_id)),
-                    user.external_id,
-                    true
-                );
+            if (localServer) {
                 await connectSrvpro({
-                    ip: mcServer.ip + ":" + mcServer.port,
+                    ip: localServer.ip + ":" + localServer.port,
                     player: user.username,
-                    passWd,
+                    passWd: String(getPrivateRoomID(user.id)),
                 });
             }
         }
     };
 
-    // Unirse a sala privada MC
+    // Unirse a sala privada
     const onJoinRoom = async () => {
         if (user) {
             if (mcCustomRoomStore.friendPrivateID !== undefined) {
-                const mcServer = serverList.find(
-                    (server) => server.name === "mycard-custom"
+                const localServer = serverList.find(
+                    (server) => server.name === "ygo-legacy"
                 );
-                if (mcServer) {
-                    const passWd = getJoinRoomPasswd(
-                        String(mcCustomRoomStore.friendPrivateID),
-                        user.external_id,
-                        true
-                    );
+                if (localServer) {
                     await connectSrvpro({
-                        ip: mcServer.ip + ":" + mcServer.port,
+                        ip: localServer.ip + ":" + localServer.port,
                         player: user.username,
-                        passWd,
+                        passWd: String(mcCustomRoomStore.friendPrivateID),
                     });
                 }
             } else {

@@ -29,7 +29,7 @@ export const CustomRoomContent: React.FC = () => {
   const { message } = App.useApp();
   const user = useSnapshot(accountStore).user;
   const { options, friendPrivateID } = useSnapshot(mcCustomRoomStore);
-  const privateRoomID = getPrivateRoomID(user?.external_id ?? 0);
+  const privateRoomID = getPrivateRoomID(user?.id ?? 0);
 
   useEffect(() => {
     if (!user) {
