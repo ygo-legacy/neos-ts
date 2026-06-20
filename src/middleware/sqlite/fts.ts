@@ -3,6 +3,7 @@ import { isNil } from "lodash-es";
 import { Database } from "sql.js";
 
 import { CardData, CardMeta, CardText } from "@/api";
+import { LEGACY_FORBIDDEN_TYPES } from "@/config/legacy";
 
 import { constructCardMeta } from ".";
 const TYPE_MONSTER = 0x1;
@@ -47,6 +48,7 @@ export function invokeFts(db: Database, params: FtsParams): CardMeta[] {
     FROM datas
     INNER JOIN texts ON datas.id = texts.id
     WHERE (texts.name || texts.desc) LIKE $query
+    AND (datas.type & ${LEGACY_FORBIDDEN_TYPES}) = 0
     ${filterConditions ? `AND ${filterConditions}` : ""}
   `);
 

@@ -5,10 +5,11 @@
  * que oculta las mecánicas modernas (Synchro, Xyz, Pendulum, Link).
  */
 
+export const LEGACY_FORBIDDEN_TYPES =
+  0x1000 | 0x2000 | 0x800000 | 0x1000000 | 0x4000000;
+
 export const LEGACY_CONFIG = {
-    // Habilitar modo Legacy (oculta zonas modernas)
-    // NOTA: Deshabilitado temporalmente para verificar que todo funciona
-    enabled: false,
+    enabled: true,
 
     // Ocultar Extra Monster Zones (zonas 5 y 6)
     hideExtraMonsterZones: true,

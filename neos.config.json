@@ -36,8 +36,8 @@
   "legacyApiUrl": "http://localhost:3000/api",
   "releaseResource": {
     "img": "https://cdn02.moecube.com:444/images/ygopro-images-zh-CN",
-    "cdb": "https://cdn02.moecube.com:444/ygopro-database/zh-CN/cards.cdb",
-    "lflist": "https://cdn02.moecube.com:444/ygopro-database/zh-CN/lflist.conf"
+    "cdb": "http://localhost:8080/database/cards.cdb",
+    "lflist": "http://localhost:8080/database/lflist.conf"
   },
   "preReleaseResource": {
     "img": "https://cdn02.moecube.com:444/ygopro-super-pre/data/pics",

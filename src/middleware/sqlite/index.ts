@@ -13,6 +13,7 @@ import { useConfig } from "@/config";
 import { pfetch } from "@/infra";
 
 import { FtsParams, invokeFts } from "./fts";
+import { LEGACY_FORBIDDEN_TYPES } from "@/config/legacy";
 
 const NeosConfig = useConfig();
 
@@ -129,6 +130,11 @@ function helper<T extends sqliteCmd>(action: sqliteAction<T>) {
 
         const dataStmt = db.prepare("SELECT * FROM datas WHERE ID = $id");
         const dataResult = dataStmt.getAsObject({ $id: code });
+
+        if ((dataResult.type as number & LEGACY_FORBIDDEN_TYPES) !== 0) {
+          return {};
+        }
+
         const textStmt = db.prepare("SELECT * FROM texts WHERE ID = $id");
         const textResult = textStmt.getAsObject({ $id: code });
 
